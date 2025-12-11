@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="业余无线电通联记录助手 - BG4QBF. 在线记录通联日志, 利用地图可视化数据." />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <title>业余无线电通联记录助手 - BG4QBF</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <script src="http://api.tianditu.gov.cn/api?v=4.0&tk={{.}}" type="text/javascript"></script>
+    <script src="js/main.js" defer></script>
+</head>
+
+<body onload="onload()">
+    <header>
+        HamLogHelper 业余无线电通联记录助手
+    </header>
+    <div id="mainpage">
+        <div class="field" id="log">
+            <p class="fieldtitle">记录</p>
+            <div id="logs">
+                <table border="1" id="logtable">
+                    <tr>
+                        <td>位号</td>
+                        <td>呼号</td>
+                        <td>日期时间</td>
+                        <td>频率</td>
+                        <td>模式</td>
+                        <td>信号</td>
+                        <td>对方设备</td>
+                        <td>对方功率</td>
+                        <td>对方天线</td>
+                        <td>对方台址</td>
+                        <td>己方设备</td>
+                        <td>己方功率</td>
+                        <td>己方天线</td>
+                        <td>己方台址</td>
+                        <td>备注</td>
+                    </tr>
+                </table>
+            </div>
+            <hr>
+            <div id="inputs">
+                <form tabindex="-1" id="infoform">
+                    <div id="formdiv">
+
+                        <label for="callsign" id="callsignlabel">呼号: </label>
+                        <input type="text" name="callsign" id="callsign" required>
+
+                        <input type="checkbox" name="dtauto" id="dtauto" value="auto" onclick="auto_dt(this)"
+                            tabindex="-1">
+                        <label for="dtauto" id="dtautolabel">自动</label>
+                        <label for="dt" id="dtlabel">日期时间: </label>
+                        <input type="datetime-local" name="dt" id="dt" min="1900-01-01T00:00" max="2999-12-31T23:59"
+                            required>
+
+                        <input type="checkbox" name="bandlock" id="bandlock" value="lock"
+                            onclick="click_lock(this, 'band')" tabindex="-1">
+                        <label for="bandlock" id="bandlocklabel">锁定</label>
+                        <label for="band" id="bandlabel">频率: </label>
+                        <input type="text" name="band" id="band" required>
+
+                        <input type="checkbox" name="modelock" id="modelock" value="lock"
+                            onclick="click_lock(this, 'mode')" tabindex="-1">
+                        <label for="modelock" id="modelocklabel">锁定</label>
+                        <label for="mode" id="modelabel">模式: </label>
+                        <input type="text" name="mode" id="mode" required>
+
+                        <label for="rst" id="rstlabel">信号: </label>
+                        <input type="number" name="rst" id="rst" min="0" max="59" required>
+
+                        <label for="rrig" id="rriglabel">对方设备: </label>
+                        <input type="text" name="rrig" id="rrig" required>
+
+                        <label for="rpwr" id="rpwrlabel">对方功率: </label>
+                        <input type="text" name="rpwr" id="rpwr" required>
+
+                        <label for="rant" id="rantlabel">对方天线: </label>
+                        <input type="text" name="rant" id="rant" required>
+
+                        <label for="rqth" id="rqthlabel">对方台址: </label>
+                        <input type="text" name="rqth" id="rqth" required>
+
+                        <input type="checkbox" name="triglock" id="triglock" value="lock"
+                            onclick="click_lock(this, 'trig')" tabindex="-1">
+                        <label for="triglock" id="triglocklabel">锁定</label>
+                        <label for="trig" id="triglabel">己方设备: </label>
+                        <input type="text" name="trig" id="trig" required>
+
+                        <input type="checkbox" name="tpwrlock" id="tpwrlock" value="lock"
+                            onclick="click_lock(this, 'tpwr')" tabindex="-1">
+                        <label for="tpwrlock" id="tpwrlocklabel">锁定</label>
+                        <label for="tpwr" id="tpwrlabel">己方功率: </label>
+                        <input type="text" name="tpwr" id="tpwr" required>
+
+                        <input type="checkbox" name="tantlock" id="tantlock" value="lock"
+                            onclick="click_lock(this, 'tant')" tabindex="-1">
+                        <label for="tantlock" id="tantlocklabel">锁定</label>
+                        <label for="tant" id="tantlabel">己方天线: </label>
+                        <input type="text" name="tant" id="tant" required>
+
+                        <input type="checkbox" name="tqthlock" id="tqthlock" value="lock"
+                            onclick="click_lock(this, 'tqth')" tabindex="-1">
+                        <label for="tqthlock" id="tqthlocklabel">锁定</label>
+                        <label for="tqth" id="tqthlabel">己方台址: </label>
+                        <input type="text" name="tqth" id="tqth" required>
+
+                        <label for="rmks" id="rmkslabel">备注: </label>
+                        <input type="text" name="rmks" id="rmks">
+
+                        <input type="submit" name="submit" id="submit" value="提交">
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="field" id="map">
+            <p class="fieldtitle">地图</p>
+            <div id="mapdiv"></div>
+            <hr>
+            <div id="mapsearch">
+                <label for="mapsearchinput">位置搜索: </label>
+                <input type="text" name="mapsearchinput" id="mapsearchinput" tabindex="-1">
+                <p>搜索结果:</p>
+                <div id="suggests"></div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        by odorajbotoj (BG4QBF) | MIT License | Copyright (c) 2025 薛子豪
+    </footer>
+</body>
+
+</html>
