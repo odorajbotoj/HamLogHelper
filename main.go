@@ -71,7 +71,7 @@ func main() {
 			return
 		}
 		defer conn.Close()
-		file, err := os.OpenFile(time.Now().UTC().Format(time.RFC3339)+".csv", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		file, err := os.OpenFile(time.Now().UTC().Format("2006-01-02T15_04_05")+".csv", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 		if err != nil {
 			log.Printf("File writer failed: %v", err)
 			return
@@ -112,7 +112,7 @@ func main() {
 
 	// 启动服务
 	log.Println("Server listening on local port 5973 ...")
-	if err = http.ListenAndServe(":5973", nil); err != nil {
+	if err = http.ListenAndServe("localhost:5973", nil); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
