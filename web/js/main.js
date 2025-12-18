@@ -5,6 +5,7 @@ var local_search;
 var geocoder;
 var markers;
 var socket;
+var logname;
 
 // 时间更新函数
 function update_dt() {
@@ -73,52 +74,66 @@ function onload() {
     // 清空输入框
     clear_input();
 
+    // 表单提交行为
+    document.getElementById("infoform").addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        let info_json = {
+            "callsign": document.getElementById("callsign").value,
+            "dt": document.getElementById("dt").value,
+            "band": document.getElementById("band").value,
+            "mode": document.getElementById("mode").value,
+            "rst": parseInt(document.getElementById("rst").value),
+            "rrig": document.getElementById("rrig").value,
+            "rpwr": document.getElementById("rpwr").value,
+            "rant": document.getElementById("rant").value,
+            "rqth": document.getElementById("rqth").value,
+            "trig": document.getElementById("trig").value,
+            "tpwr": document.getElementById("tpwr").value,
+            "tant": document.getElementById("tant").value,
+            "tqth": document.getElementById("tqth").value,
+            "rmks": document.getElementById("rmks").value
+        }
+        socket.send(JSON.stringify(info_json));
+        clear_input();
+        document.getElementById("callsign").focus();
+    });
+
+    // 询问文件名
+    logname = prompt("输入要打开的文件名（不存在则新建）", "newlogbook");
+
     // ws
     socket = new WebSocket(`ws://${window.location.host}/ws`);
-    socket.onopen = () => { socket.send("QSL?"); };
+    socket.onopen = () => { socket.send("QSL?" + logname); };
     socket.onmessage = (ev) => {
         let dat = String(ev.data);
-        if (dat.startsWith("QSL.")) {
+        if (dat == "QSL.") {
             alert("服务已连接");
-            document.getElementById("submit").value = `提交 #${parseInt(dat.substring(4)) + 1}`;
-        } else if (dat.startsWith("ADDLOG>")) {
-            let info = dat.substring(7);
-            // 解析csv (仅限此程序生成的信息)
-            let info_arr_orig = info.split(",");
-            let info_arr = [""];
-            for (let i in info_arr_orig) {
-                if (info_arr_orig[i].startsWith('"')) info_arr.push(info_arr_orig[i]);
-                else info_arr[info_arr.length - 1] += "," + info_arr_orig[i];
-            }
-            if (info_arr[0] == "") info_arr.shift();
-            if (info_arr.length != 15) alert("CSV信息解析失败"); // 后端补充位次tag
-            // 去除首尾引号并解除转义
-            for (let i in info_arr) {
-                info_arr[i] = info_arr[i].substring(1, info_arr[i].length - 1);
-                info_arr[i] = info_arr[i].replace('""', '"');
-            }
-            document.getElementById("submit").value = `提交 #${parseInt(info_arr[0]) + 1}`;
-            /*
-                0 - 位次
-                1 - 呼号
-                2 - 时间
-                9 - QTH
-            */
+        } else {
+            let info = JSON.parse(dat);
+            document.getElementById("submit").value = `提交 #${info.index + 1}`;
             // 记录表格
+            let keys = ["index", "callsign", "dt", "band", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
             let newtr = document.createElement("tr");
-            for (let i = 0; i < info_arr.length; i++) {
+            for (let i = 0; i < keys.length; i++) {
                 let newtd = document.createElement("td");
-                newtd.textContent = info_arr[i];
+                newtd.textContent = info[keys[i]];
                 newtr.appendChild(newtd);
             }
             document.getElementById("logtable").appendChild(newtr);
+            // 自动滚动
+            let logdiv = document.getElementById("logs");
+            logdiv.scroll({
+                top: logdiv.scrollHeight,
+                left: 0,
+                behavior: "smooth",
+            });
             // 地理编码
-            geocoder.getPoint(info_arr[9], (rst) => {
+            geocoder.getPoint(info.rqth, (rst) => {
                 if (rst.getStatus() == 0) {
                     map.panTo(rst.getLocationPoint(), 16);
                     let marker = new T.Marker(rst.getLocationPoint());
                     map.addOverLay(marker);
-                    let marker_info = new T.InfoWindow(`${info_arr[0]}. ${info_arr[1]}<br>${info_arr[2]}<br>${info_arr[9]}`);
+                    let marker_info = new T.InfoWindow(`${info.index}. ${info.callsign}<br>${info.dt}<br>${info.rqth}`);
                     marker.addEventListener("click", () => { marker.openInfoWindow(marker_info); });
                     markers.addMarker(marker);
                 }
@@ -126,15 +141,6 @@ function onload() {
         }
     };
     socket.onerror = () => { alert("服务连接失败"); };
-
-    // 阻止表单提交
-    document.getElementById("infoform").addEventListener("submit", (ev) => {
-        ev.preventDefault();
-        let get_str_and_decorate = (id) => { return `"${document.getElementById(id).value.replace('"', '""')}"`; };
-        socket.send(`${get_str_and_decorate("callsign")},${get_str_and_decorate("dt")},${get_str_and_decorate("band")},${get_str_and_decorate("mode")},${get_str_and_decorate("rst")},${get_str_and_decorate("rrig")},${get_str_and_decorate("rpwr")},${get_str_and_decorate("rant")},${get_str_and_decorate("rqth")},${get_str_and_decorate("trig")},${get_str_and_decorate("tpwr")},${get_str_and_decorate("tant")},${get_str_and_decorate("tqth")},${get_str_and_decorate("rmks")}`);
-        clear_input();
-        document.getElementById("callsign").focus();
-    });
 }
 
 // 自动更新时间
