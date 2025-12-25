@@ -21,16 +21,26 @@ function clear_input() {
     document.getElementById("rst").value = 59; // by default
 }
 
+// 自动更新时间
+function auto_dt(cb) {
+    const ele_dt = document.getElementById("dt");
+    if (cb.checked == true) {
+        update_dt();
+        ele_dt.disabled = true;
+        dt_interval = setInterval(update_dt, 10000);
+    } else {
+        ele_dt.disabled = false;
+        clearInterval(dt_interval);
+    }
+}
+
+// 锁定参数
+function click_lock(cb, id) {
+    document.getElementById(id).disabled = cb.checked;
+}
+
+// 窗口加载完成执行
 function onload() {
-    // 时间同步更新
-    update_dt();
-
-    // 天地图
-    map = new T.Map("mapdiv");
-    map.centerAndZoom(new T.LngLat(116.40769, 39.89945), 12);
-    geocoder = new T.Geocoder();
-    markers = new T.MarkerClusterer(map, { markers: [] });
-
     // 获取记忆数据
     let xhrtmpl = new XMLHttpRequest();
     xhrtmpl.onreadystatechange = () => {
@@ -48,6 +58,12 @@ function onload() {
     };
     xhrdict.open("GET", `http://${window.location.host}/dict.json`, true);
     xhrdict.send();
+
+    // 天地图
+    map = new T.Map("mapdiv");
+    map.centerAndZoom(new T.LngLat(116.40769, 39.89945), 12);
+    geocoder = new T.Geocoder();
+    markers = new T.MarkerClusterer(map, { markers: [] });
 
     // 设置滚动
     document.getElementById("mapdiv").addEventListener("wheel", (e) => {
@@ -102,7 +118,11 @@ function onload() {
         suggests_div.innerHTML = suggests;
     });
     document.getElementById("rrig").addEventListener("input", () => {
-        let rst = dictjson.rig[document.getElementById("rrig").value.toLowerCase()];
+        let rst = [];
+        let rstkeys = Object.keys(dictjson.rig).filter((item) => { return item.includes(document.getElementById("rrig").value.toLowerCase()); });
+        for (let i in rstkeys) {
+            rst = rst.concat(dictjson.rig[rstkeys[i]]);
+        }
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
@@ -117,7 +137,11 @@ function onload() {
         }
     });
     document.getElementById("rpwr").addEventListener("input", () => {
-        let rst = dictjson.pwr[document.getElementById("rpwr").value.toLowerCase()];
+        let rst = [];
+        let rstkeys = Object.keys(dictjson.pwr).filter((item) => { return item.includes(document.getElementById("rpwr").value.toLowerCase()); });
+        for (let i in rstkeys) {
+            rst = rst.concat(dictjson.pwr[rstkeys[i]]);
+        }
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
@@ -132,7 +156,11 @@ function onload() {
         }
     });
     document.getElementById("rant").addEventListener("input", () => {
-        let rst = dictjson.ant[document.getElementById("rant").value.toLowerCase()];
+        let rst = [];
+        let rstkeys = Object.keys(dictjson.ant).filter((item) => { return item.includes(document.getElementById("rant").value.toLowerCase()); });
+        for (let i in rstkeys) {
+            rst = rst.concat(dictjson.ant[rstkeys[i]]);
+        }
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
@@ -147,7 +175,11 @@ function onload() {
         }
     });
     document.getElementById("rqth").addEventListener("input", () => {
-        let rst = dictjson.qth[document.getElementById("rqth").value.toLowerCase()];
+        let rst = [];
+        let rstkeys = Object.keys(dictjson.qth).filter((item) => { return item.includes(document.getElementById("rqth").value.toLowerCase()); });
+        for (let i in rstkeys) {
+            rst = rst.concat(dictjson.qth[rstkeys[i]]);
+        }
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
@@ -169,6 +201,9 @@ function onload() {
 
     // 清空输入框
     clear_input();
+    // 时间同步更新
+    update_dt();
+    auto_dt(document.getElementById("dtauto"));
 
     // 表单提交行为
     document.getElementById("infoform").addEventListener("submit", (ev) => {
@@ -237,23 +272,4 @@ function onload() {
         }
     };
     socket.onerror = () => { alert("服务连接失败"); };
-}
-
-// 自动更新时间
-function auto_dt(cb) {
-    const ele_dt = document.getElementById("dt");
-    if (cb.checked == true) {
-        update_dt();
-        ele_dt.disabled = true;
-        dt_interval = setInterval(update_dt, 10000);
-    } else {
-        ele_dt.disabled = false;
-        clearInterval(dt_interval);
-    }
-}
-
-
-// 锁定参数
-function click_lock(cb, id) {
-    document.getElementById(id).disabled = cb.checked;
 }
