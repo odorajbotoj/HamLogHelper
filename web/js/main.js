@@ -46,6 +46,7 @@ function onload() {
     xhrtmpl.onreadystatechange = () => {
         if (xhrtmpl.readyState == 4 && xhrtmpl.status == 200) {
             tmpljson = JSON.parse(xhrtmpl.responseText);
+            alert("模板已加载");
         }
     };
     xhrtmpl.open("GET", `http://${window.location.host}/tmpl.json`, true);
@@ -54,6 +55,7 @@ function onload() {
     xhrdict.onreadystatechange = () => {
         if (xhrdict.readyState == 4 && xhrdict.status == 200) {
             dictjson = JSON.parse(xhrdict.responseText);
+            alert("字典已加载");
         }
     };
     xhrdict.open("GET", `http://${window.location.host}/dict.json`, true);
