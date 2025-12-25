@@ -12,6 +12,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"html/template"
+	"io"
 	"io/fs"
 	"log"
 	"net/http"
@@ -51,6 +52,10 @@ type LogLine struct {
 	Rmks     string `json:"rmks"`
 }
 
+// tmpl & dict
+var tmplJson []byte
+var dictJson []byte
+
 func main() {
 	log.Printf("\nHamLogHelper 业余无线电通联记录助手\nby odorajbotoj (BG4QBF)\nVERSION: %s", VERSION)
 
@@ -59,6 +64,16 @@ func main() {
 	tdtKey := strings.TrimSpace(string(tdtKeyBytes))
 	if err != nil || tdtKey == "" {
 		log.Fatalln("Cannot read tianditu-key.txt or file is empty.")
+	}
+
+	// 读取tmpl和dict
+	if file, err := os.Open("tmpl.json"); err == nil {
+		tmplJson, _ = io.ReadAll(file)
+		file.Close()
+	}
+	if file, err := os.Open("dict.json"); err == nil {
+		dictJson, _ = io.ReadAll(file)
+		file.Close()
 	}
 
 	// 嵌入文件系统处理
@@ -79,6 +94,12 @@ func main() {
 	http.Handle("/css/", fileServer)
 	http.Handle("/js/", fileServer)
 	http.Handle("/favicon.ico", fileServer)
+	http.HandleFunc("/tmpl.json", func(w http.ResponseWriter, r *http.Request) {
+		w.Write(tmplJson)
+	})
+	http.HandleFunc("/dict.json", func(w http.ResponseWriter, r *http.Request) {
+		w.Write(dictJson)
+	})
 
 	// 注册ws
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {

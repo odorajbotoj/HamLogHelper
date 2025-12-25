@@ -293,7 +293,7 @@ hr {
     height: calc(41dvh - 14px);
 }
 
-#mapsearch {
+#search {
     height: calc(41dvh - 14px);
     overflow: auto;
 }
