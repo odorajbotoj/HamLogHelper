@@ -94,22 +94,22 @@ hr {
     grid-row: 2;
 }
 
-#bandlock {
+#freqlock {
     grid-column: 1;
     grid-row: 3;
 }
 
-#bandlocklabel {
+#freqlocklabel {
     grid-column: 2;
     grid-row: 3;
 }
 
-#bandlabel {
+#freqlabel {
     grid-column: 3;
     grid-row: 3;
 }
 
-#band {
+#freq {
     grid-column: 4;
     grid-row: 3;
 }
