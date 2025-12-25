@@ -7,6 +7,7 @@ var markers;
 var socket;
 var logname;
 var tmpljson, dictjson;
+var re = new RegExp("^(([1-9]\\d*)|0)\\.\\d+/[+-](([1-9]\\d*)|0)\\.\\d+$");
 
 const ALLOWED_MODES = [
     "AM", "ARDOP", "ATV", "CHIP", "CLO", "CONTESTI", "CW", "DIGITALVOICE", "DOMINO", "DYNAMIC", "FAX",
@@ -230,7 +231,7 @@ function onload() {
 
     // 检查复选框状态
     document.getElementById("dt").disabled = document.getElementById("dtauto").checked;
-    let lock_names = ["band", "mode", "trig", "tpwr", "tant", "tqth"];
+    let lock_names = ["freq", "mode", "trig", "tpwr", "tant", "tqth"];
     for (let i in lock_names) document.getElementById(lock_names[i]).disabled = document.getElementById(lock_names[i] + "lock").checked;
 
     // 清空输入框
@@ -245,7 +246,7 @@ function onload() {
         let info_json = {
             "callsign": document.getElementById("callsign").value,
             "dt": document.getElementById("dt").value,
-            "band": document.getElementById("band").value,
+            "freq": document.getElementById("freq").value,
             "mode": document.getElementById("mode").value,
             "rst": parseInt(document.getElementById("rst").value),
             "rrig": document.getElementById("rrig").value,
@@ -258,7 +259,16 @@ function onload() {
             "tqth": document.getElementById("tqth").value,
             "rmks": document.getElementById("rmks").value
         }
-        socket.send(JSON.stringify(info_json));
+        let datajson = JSON.stringify(info_json);
+        if (!ALLOWED_MODES.includes(datajson.mode)) {
+            alert("未知的模式");
+            return;
+        }
+        if (!re.test(datajson.freq)) {
+            alert("无法解析的频率");
+            return;
+        }
+        socket.send(datajson);
         clear_input();
         document.getElementById("callsign").focus();
     });
@@ -277,7 +287,7 @@ function onload() {
             let info = JSON.parse(dat);
             document.getElementById("submit").value = `提交 #${info.index + 1}`;
             // 记录表格
-            let keys = ["index", "callsign", "dt", "band", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
+            let keys = ["index", "callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
             let newtr = document.createElement("tr");
             for (let i = 0; i < keys.length; i++) {
                 let newtd = document.createElement("td");
