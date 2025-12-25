@@ -259,16 +259,15 @@ function onload() {
             "tqth": document.getElementById("tqth").value,
             "rmks": document.getElementById("rmks").value
         }
-        let datajson = JSON.stringify(info_json);
-        if (!ALLOWED_MODES.includes(datajson.mode)) {
+        if (!ALLOWED_MODES.includes(info_json.mode)) {
             alert("未知的模式");
             return;
         }
-        if (!re.test(datajson.freq)) {
+        if (!re.test(info_json.freq)) {
             alert("无法解析的频率");
             return;
         }
-        socket.send(datajson);
+        socket.send(JSON.stringify(info_json));
         clear_input();
         document.getElementById("callsign").focus();
     });
