@@ -1,6 +1,8 @@
 /tianditu-key.txt
 *.csv
 *.xlsx
+*.adi
+*.adif
 /HamLogHelper*
 tmpl.json
 dict.json
