@@ -8,6 +8,17 @@ var socket;
 var logname;
 var tmpljson, dictjson;
 
+const ALLOWED_MODES = [
+    "AM", "ARDOP", "ATV", "CHIP", "CLO", "CONTESTI", "CW", "DIGITALVOICE", "DOMINO", "DYNAMIC", "FAX",
+    "FM", "FSK441", "FSK", "FT8", "HELL", "ISCAT", "JT4", "JT6M", "JT9", "JT44", "JT65", "MFSK", "MSK144",
+    "MTONE", "MT63", "OLIVIA", "OPERA", "PAC", "PAX", "PKT", "PSK", "PSK2K", "Q15", "QRA64", "ROS", "RTTY",
+    "RTTYM", "SSB", "SSTV", "T10", "THOR", "THRB", "TOR", "V4", "VOI", "WINMOR", "WSPR", "AMTORFEC", "ASCI",
+    "C4FM", "CHIP64", "CHIP128", "DOMINOF", "DSTAR", "FMHELL", "FSK31", "GTOR", "HELL80", "HFSK", "JT4A",
+    "JT4B", "JT4C", "JT4D", "JT4E", "JT4F", "JT4G", "JT65A", "JT65B", "JT65C", "MFSK8", "MFSK16", "PAC2",
+    "PAC3", "PAX2", "PCW", "PSK10", "PSK31", "PSK63", "PSK63F", "PSK125", "PSKAM10", "PSKAM31", "PSKAM50",
+    "PSKFEC31", "PSKHELL", "QPSK31", "QPSK63", "QPSK125", "THRBX"
+];
+
 // 时间更新函数
 function update_dt() {
     const dt = document.getElementById("dt");
@@ -104,9 +115,26 @@ function onload() {
     });
 
     // 简写搜索
+    // 模式
+    document.getElementById("mode").addEventListener("input", () => {
+        let ele = document.getElementById("mode");
+        ele.value = ele.value.toUpperCase();
+        let rst = ALLOWED_MODES.filter((item) => { return item.includes(ele.value); });
+        let suggests_div = document.getElementById("suggests");
+        suggests_div.innerHTML = "";
+        let mapsuggests_div = document.getElementById("mapsuggests");
+        mapsuggests_div.innerHTML = "";
+        let suggests = "<ol>";
+        for (let i in rst) {
+            suggests += `<li>[模式]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('mode').value='${rst[i]}';document.getElementById('mode').focus();">${rst[i]}</a></li>`;
+        }
+        suggests += "</ol>";
+        suggests_div.innerHTML = suggests;
+    });
+    // 呼号 - 模板
     document.getElementById("callsign").addEventListener("input", () => {
         let ele = document.getElementById("callsign");
-        ele.value = ele.value.toUpperCase()
+        ele.value = ele.value.toUpperCase();
         let rst = tmpljson.filter((item) => { return item.callsign.includes(ele.value); });
         let suggests_div = document.getElementById("suggests");
         suggests_div.innerHTML = "";
@@ -119,6 +147,7 @@ function onload() {
         suggests += "</ol>";
         suggests_div.innerHTML = suggests;
     });
+    // 设备 - 字典
     document.getElementById("rrig").addEventListener("input", () => {
         let rst = [];
         let rstkeys = Object.keys(dictjson.rig).filter((item) => { return item.includes(document.getElementById("rrig").value.toLowerCase()); });
@@ -138,6 +167,7 @@ function onload() {
             suggests_div.innerHTML = suggests;
         }
     });
+    // 功率 - 字典
     document.getElementById("rpwr").addEventListener("input", () => {
         let rst = [];
         let rstkeys = Object.keys(dictjson.pwr).filter((item) => { return item.includes(document.getElementById("rpwr").value.toLowerCase()); });
@@ -157,6 +187,7 @@ function onload() {
             suggests_div.innerHTML = suggests;
         }
     });
+    // 天线 - 字典
     document.getElementById("rant").addEventListener("input", () => {
         let rst = [];
         let rstkeys = Object.keys(dictjson.ant).filter((item) => { return item.includes(document.getElementById("rant").value.toLowerCase()); });
@@ -176,6 +207,7 @@ function onload() {
             suggests_div.innerHTML = suggests;
         }
     });
+    // QTH - 字典
     document.getElementById("rqth").addEventListener("input", () => {
         let rst = [];
         let rstkeys = Object.keys(dictjson.qth).filter((item) => { return item.includes(document.getElementById("rqth").value.toLowerCase()); });
