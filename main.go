@@ -127,7 +127,7 @@ func write2adif(file *os.File, data LogLine) error {
 	// 格式化输出一行ADIF
 	_, err := fmt.Fprintf(
 		file,
-		"<CALL:%d>%s <BAND:%d>%s <MODE:%d>%s <QSO_DATE:8>%4d%2d%2d <TIME_ON:6>%2d%2d00 <FREQ:%d>%s <BAND_RX:%d>%s <FREQ_RX:%d>%s <EOR>\n",
+		"<CALL:%d>%s <BAND:%d>%s <MODE:%d>%s <QSO_DATE:8>%04d%02d%02d <TIME_ON:6>%02d%02d00 <FREQ:%d>%s <BAND_RX:%d>%s <FREQ_RX:%d>%s <EOR>\n",
 		len(data.Callsign), data.Callsign,
 		len(BAND_TABLE[bandTxIdx].name), BAND_TABLE[bandTxIdx].name,
 		len(data.Mode), data.Mode,
