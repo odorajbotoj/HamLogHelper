@@ -16,25 +16,12 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/gorilla/websocket"
 )
 
 const VERSION string = "v1.0.0"
 
 //go:embed web/*
 var embedFiles embed.FS
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-type bandInfo struct {
-	name string
-	min  float64
-	max  float64
-}
 
 // tmpl & dict
 var tmplJson []byte

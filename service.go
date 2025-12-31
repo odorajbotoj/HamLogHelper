@@ -13,6 +13,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
 func wsService(w http.ResponseWriter, r *http.Request) {
 	// 升级协议
 	conn, err := upgrader.Upgrade(w, r, nil)

@@ -6,6 +6,12 @@ import (
 	"strconv"
 )
 
+type bandInfo struct {
+	name string
+	min  float64
+	max  float64
+}
+
 var BAND_TABLE [33]bandInfo = [33]bandInfo{
 	{"2190m", 0.1357, 0.1378},
 	{"630m", 0.472, 0.479},
