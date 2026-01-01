@@ -1,13 +1,12 @@
 package main
 
 import (
-	"encoding/csv"
+	"bufio"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
-	"strings"
 	"sync/atomic"
 
 	"github.com/gorilla/websocket"
@@ -30,17 +29,13 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 	var count uint64 = 0
 	// 文件
 	var file *os.File
-	var adif *os.File
 	defer func() {
 		if file != nil {
 			file.Close()
 		}
-		if adif != nil {
-			adif.Close()
-		}
 	}()
 	// 禁止获取句柄前写入数据
-	var connstat bool = false
+	var connStat bool = false
 	// 主逻辑
 	for {
 		// 接受消息
@@ -51,102 +46,134 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 		}
 		// 处理消息
 		if messageType == websocket.TextMessage {
-			s := string(p)
-			if strings.HasPrefix(s, "QSL?") { // 建立连接
-				// 确认连接
-				if err := conn.WriteMessage(messageType, []byte("QSL.")); err != nil {
-					log.Println(err)
+			// 反序列化
+			var inData Data
+			err := json.Unmarshal(p, &inData)
+			if err != nil {
+				log.Printf("Failed to unmarshal input data. %v\n", err)
+				continue
+			}
+			if inData.Type == ConnectData {
+				// 客户端握手
+				// 写回普通信息OK
+				var reData Data
+				reData.Type = MessageData
+				reData.Message = "OK"
+				b, err := json.Marshal(reData)
+				if err != nil {
+					log.Printf("Cannot marshal json data. %v\n", err)
 					return
 				}
-				// 取文件名
-				fname := strings.TrimPrefix(s, "QSL?")
+				if err := conn.WriteMessage(messageType, b); err != nil {
+					log.Printf("Failed to write to client. %v\n", err)
+					return
+				}
 				// 打开文件
-				if rfile, err := os.Open(fname + ".csv"); err == nil {
-					// 读取csv
-					csvReader := csv.NewReader(rfile)
-					for {
-						record, err := csvReader.Read()
-						if err != nil {
-							break
-						}
-						idx, err := strconv.ParseUint(record[0], 10, 64)
-						if err != nil {
-							log.Println(err)
-							continue
-						}
-						atomic.StoreUint64(&count, idx)
-						rst, err := strconv.Atoi(record[5])
-						if err != nil {
-							log.Println(err)
-							continue
-						}
-						ll := LogLine{idx, record[1], record[2], record[3], record[4], rst, record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], record[14]}
-						infoJson, err := json.Marshal(ll)
-						if err != nil {
-							log.Println(err)
-							continue
-						}
-						// 传输给前端
-						if err := conn.WriteMessage(messageType, infoJson); err != nil {
-							log.Println(err)
-							return
-						}
+				file, err = os.OpenFile(inData.Message+".hjl", os.O_CREATE|os.O_RDWR, 0644)
+				if err != nil {
+					log.Printf("Failed to open log file. %v\n", err)
+					return
+				}
+				// 重置光标位置
+				_, err = file.Seek(0, io.SeekStart)
+				if err != nil {
+					log.Printf("File Seek Error. %v\n", err)
+					return
+				}
+				// 按行读取解析
+				lst := newLinkedList()
+				scanner := bufio.NewScanner(file)
+				for scanner.Scan() {
+					var line LogLine
+					if err := json.Unmarshal(scanner.Bytes(), &line); err != nil {
+						log.Printf("Failed to unmarshal a line. %v\n", err)
+						continue
 					}
-					rfile.Close()
+					lst.set(line.Index, &line)
 				}
-				if file != nil {
-					file.Close()
-				}
-				file, err = os.OpenFile(fname+".csv", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+				lines := lst.dumpTill(lst.maxPos)
+				// 清空文件
+				err = file.Truncate(0)
 				if err != nil {
-					log.Printf("File writer failed: %v", err)
+					log.Printf("Failed to truncate file. %v", err)
 					return
 				}
-				adif, err = os.OpenFile(fname+".adi", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+				_, err = file.Seek(0, io.SeekStart)
 				if err != nil {
-					log.Printf("ADIF writer failed: %v", err)
+					log.Printf("File Seek Error. %v\n", err)
 					return
 				}
-				connstat = true
-			} else { // 传输log
-				if !connstat {
+				// 写回文件和前端
+				reData.Type = JsonData
+				reData.Message = "SYNC"
+				for _, line := range lines {
+					reData.Payload = line
+					bReData, err := json.Marshal(reData)
+					if err != nil {
+						log.Printf("Cannot marshal json data. %v\n", err)
+						return
+					}
+					bLine, err := json.Marshal(line)
+					if err != nil {
+						log.Printf("Cannot marshal json line data. %v\n", err)
+						return
+					}
+					if _, err := file.Write(append(bLine, '\n')); err != nil {
+						log.Printf("Failed to write to file. %v\n", err)
+						return
+					}
+					if err := conn.WriteMessage(messageType, bReData); err != nil {
+						log.Printf("Failed to write to client. %v\n", err)
+						return
+					}
+					atomic.AddUint64(&count, 1)
+				}
+				connStat = true
+			} else if inData.Type == JsonData {
+				// 客户端发来信息
+				if !connStat {
 					continue
 				}
-				var infoJson LogLine
-				// 反序列化
-				err := json.Unmarshal(p, &infoJson)
-				if err != nil {
-					log.Println(err)
-					continue
+				reMsg := "EDIT"
+				if inData.Payload.Index == 0 {
+					inData.Payload.Index = atomic.AddUint64(&count, 1)
+					reMsg = "ADD"
 				}
-				// 序号自增
-				infoJson.Index = atomic.AddUint64(&count, 1)
 				// 序列化
-				sending, err := json.Marshal(infoJson)
+				bLine, err := json.Marshal(inData.Payload)
 				if err != nil {
-					log.Println(err)
-					continue
+					log.Printf("Failed to marshal json line data. %v\n", err)
+					return
 				}
-				// 写入csv
-				csvWriter := csv.NewWriter(file)
-				err = csvWriter.Write([]string{strconv.FormatUint(infoJson.Index, 10), infoJson.Callsign, infoJson.Dt, infoJson.Freq, infoJson.Mode, strconv.Itoa(infoJson.Rst), infoJson.RRig, infoJson.RPwr, infoJson.RAnt, infoJson.RQth, infoJson.TRig, infoJson.TPwr, infoJson.TAnt, infoJson.TQth, infoJson.Rmks})
+				// 光标设置到末尾
+				_, err = file.Seek(0, io.SeekEnd)
 				if err != nil {
-					log.Printf("CSV write failed: %v", err)
+					log.Printf("File Seek Error. %v\n", err)
 					return
 				}
-				csvWriter.Flush()
-				if err = csvWriter.Error(); err != nil {
-					log.Printf("CSV flush failed: %v", err)
+				// 写入文件
+				_, err = file.Write(append(bLine, '\n'))
+				if err != nil {
+					log.Printf("File write failed: %v", err)
 					return
 				}
-				// 写入adif
-				if err = write2adif(adif, infoJson); err != nil {
-					log.Printf("ADIF flush failed: %v", err)
+				err = file.Sync()
+				if err != nil {
+					log.Printf("File sync failed: %v", err)
 					return
 				}
-				// 写回客户端
-				if err := conn.WriteMessage(messageType, sending); err != nil {
-					log.Println(err)
+				// 写入前端
+				var reData Data
+				reData.Type = JsonData
+				reData.Message = reMsg
+				reData.Payload = inData.Payload
+				bReData, err := json.Marshal(reData)
+				if err != nil {
+					log.Printf("Failed to marshal json. %v\n", err)
+					return
+				}
+				if err := conn.WriteMessage(messageType, bReData); err != nil {
+					log.Printf("Failed to write to client. %v", err)
 					return
 				}
 			}

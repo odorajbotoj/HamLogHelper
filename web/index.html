@@ -17,7 +17,7 @@
     </header>
     <div id="mainpage">
         <div class="field" id="log">
-            <p class="fieldtitle">记录</p>
+            <p class="fieldtitle" id="logtitle">记录</p>
             <div id="logs">
                 <table border="1" id="logtable">
                     <tr>
@@ -43,6 +43,7 @@
             <div id="inputs">
                 <form tabindex="-1" id="infoform">
                     <div id="formdiv">
+                        <input type="number" name="index" id="index" hidden>
 
                         <label for="callsign" id="callsignlabel">呼号: </label>
                         <input type="text" name="callsign" id="callsign" required>
@@ -119,7 +120,7 @@
             <div id="mapdiv"></div>
             <hr>
             <div id="search">
-                <p>搜索结果:</p>
+                <p>搜索<span id="tmpldone"></span><span id="dictdone"></span></p>
                 <div id="suggests"></div>
                 <div id="mapsuggests"></div>
             </div>

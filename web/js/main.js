@@ -8,6 +8,8 @@ var socket;
 var logname;
 var tmpljson, dictjson;
 var re = new RegExp("^(([1-9]\\d*)|0)\\.\\d+/[+-](([1-9]\\d*)|0)\\.\\d+$");
+var nextlog = 1;
+var marks = {};
 
 const ALLOWED_MODES = [
     "AM", "ARDOP", "ATV", "CHIP", "CLO", "CONTESTI", "CW", "DIGITALVOICE", "DOMINO", "DYNAMIC", "FAX",
@@ -30,6 +32,7 @@ function update_dt() {
 // 输入框清理函数
 function clear_input() {
     document.querySelectorAll("input").forEach((ele) => { if (ele.type == "text" && !ele.disabled) ele.value = ""; });
+    document.getElementById("index").value = 0; // by default
     document.getElementById("rst").value = 59; // by default
 }
 
@@ -51,6 +54,15 @@ function click_lock(cb, id) {
     document.getElementById(id).disabled = cb.checked;
 }
 
+// 编辑条目
+function editlog(idx) {
+    let keys = ["index", "callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
+    for (let i = 0; i < keys.length; i++) {
+        document.getElementById(`${keys[i]}`).value = document.getElementById(`log_td_i${idx}_${keys[i]}`).innerText;
+    }
+    document.getElementById("submit").value = `提交 #${idx}`;
+}
+
 // 窗口加载完成执行
 function onload() {
     // 获取记忆数据
@@ -58,7 +70,7 @@ function onload() {
     xhrtmpl.onreadystatechange = () => {
         if (xhrtmpl.readyState == 4 && xhrtmpl.status == 200) {
             tmpljson = JSON.parse(xhrtmpl.responseText);
-            alert("模板已加载");
+            document.getElementById("tmpldone").innerText = " | 模板已加载";
         }
     };
     xhrtmpl.open("GET", `http://${window.location.host}/tmpl.json`, true);
@@ -67,7 +79,7 @@ function onload() {
     xhrdict.onreadystatechange = () => {
         if (xhrdict.readyState == 4 && xhrdict.status == 200) {
             dictjson = JSON.parse(xhrdict.responseText);
-            alert("字典已加载");
+            document.getElementById("dictdone").innerText = " | 字典已加载";
         }
     };
     xhrdict.open("GET", `http://${window.location.host}/dict.json`, true);
@@ -243,31 +255,36 @@ function onload() {
     // 表单提交行为
     document.getElementById("infoform").addEventListener("submit", (ev) => {
         ev.preventDefault();
-        let info_json = {
-            "callsign": document.getElementById("callsign").value,
-            "dt": document.getElementById("dt").value,
-            "freq": document.getElementById("freq").value,
-            "mode": document.getElementById("mode").value,
-            "rst": parseInt(document.getElementById("rst").value),
-            "rrig": document.getElementById("rrig").value,
-            "rpwr": document.getElementById("rpwr").value,
-            "rant": document.getElementById("rant").value,
-            "rqth": document.getElementById("rqth").value,
-            "trig": document.getElementById("trig").value,
-            "tpwr": document.getElementById("tpwr").value,
-            "tant": document.getElementById("tant").value,
-            "tqth": document.getElementById("tqth").value,
-            "rmks": document.getElementById("rmks").value
+        let retjson = {
+            "type": 3,
+            "message": "",
+            "payload": {
+                "index": parseInt(document.getElementById("index").value),
+                "callsign": document.getElementById("callsign").value,
+                "dt": document.getElementById("dt").value,
+                "freq": document.getElementById("freq").value,
+                "mode": document.getElementById("mode").value,
+                "rst": parseInt(document.getElementById("rst").value),
+                "rrig": document.getElementById("rrig").value,
+                "rpwr": document.getElementById("rpwr").value,
+                "rant": document.getElementById("rant").value,
+                "rqth": document.getElementById("rqth").value,
+                "trig": document.getElementById("trig").value,
+                "tpwr": document.getElementById("tpwr").value,
+                "tant": document.getElementById("tant").value,
+                "tqth": document.getElementById("tqth").value,
+                "rmks": document.getElementById("rmks").value
+            }
         }
-        if (!ALLOWED_MODES.includes(info_json.mode)) {
+        if (!ALLOWED_MODES.includes(retjson.payload.mode)) {
             alert("未知的模式");
             return;
         }
-        if (!re.test(info_json.freq)) {
+        if (!re.test(retjson.payload.freq)) {
             alert("无法解析的频率");
             return;
         }
-        socket.send(JSON.stringify(info_json));
+        socket.send(JSON.stringify(retjson));
         clear_input();
         document.getElementById("callsign").focus();
     });
@@ -277,23 +294,29 @@ function onload() {
 
     // ws
     socket = new WebSocket(`ws://${window.location.host}/ws`);
-    socket.onopen = () => { socket.send("QSL?" + logname); };
+    socket.onopen = () => { socket.send(JSON.stringify({ "type": 1, "message": logname })); };
     socket.onmessage = (ev) => {
-        let dat = String(ev.data);
-        if (dat == "QSL.") {
-            alert("服务已连接");
-        } else {
-            let info = JSON.parse(dat);
-            document.getElementById("submit").value = `提交 #${info.index + 1}`;
+        let info = JSON.parse(String(ev.data));
+        if (info.type == 2 && info.message == "OK") {
+            document.getElementById("logtitle").innerText = "记录 | 服务已连接";
+        } else if (info.type == 3) {
+            // 更新提交提示
+            nextlog = nextlog > info.payload.index ? nextlog : info.payload.index + 1;
+            document.getElementById("submit").value = `提交 #${nextlog}`;
             // 记录表格
-            let keys = ["index", "callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
-            let newtr = document.createElement("tr");
+            let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
+            let inner = `<td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
             for (let i = 0; i < keys.length; i++) {
-                let newtd = document.createElement("td");
-                newtd.textContent = info[keys[i]];
-                newtr.appendChild(newtd);
+                inner += `<td id="log_td_i${info.payload.index}_${keys[i]}">${info.payload[keys[i]]}</td>`;
             }
-            document.getElementById("logtable").appendChild(newtr);
+            if (info.message == "SYNC" || info.message == "ADD") {
+                let newtr = document.createElement("tr");
+                newtr.id = `log_tr_i${info.payload.index}`;
+                newtr.innerHTML = inner;
+                document.getElementById("logtable").appendChild(newtr);
+            } else if (info.message == "EDIT") {
+                document.getElementById(`log_tr_i${info.payload.index}`).innerHTML = inner;
+            }
             // 自动滚动
             let logdiv = document.getElementById("logs");
             logdiv.scroll({
@@ -301,17 +324,21 @@ function onload() {
                 left: 0,
                 behavior: "smooth",
             });
-            // 地理编码
-            geocoder.getPoint(info.rqth, (rst) => {
-                if (rst.getStatus() == 0) {
-                    map.panTo(rst.getLocationPoint(), 16);
-                    let marker = new T.Marker(rst.getLocationPoint());
-                    map.addOverLay(marker);
-                    let marker_info = new T.InfoWindow(`${info.index}. ${info.callsign}<br>${info.dt}<br>${info.rqth}`);
-                    marker.addEventListener("click", () => { marker.openInfoWindow(marker_info); });
-                    markers.addMarker(marker);
-                }
-            });
+            if (info.message == "ADD" || info.message == "EDIT") {
+                // 地理编码
+                geocoder.getPoint(info.payload.rqth, (rst) => {
+                    if (rst.getStatus() == 0) {
+                        if (info.payload.index in marks) {
+                            markers.removeMarker(marks[info.payload.index]);
+                        }
+                        map.panTo(rst.getLocationPoint(), 16);
+                        marks[info.payload.index] = new T.Marker(rst.getLocationPoint());
+                        let marker_info = new T.InfoWindow(`${info.payload.index}. ${info.payload.callsign}<br>${info.payload.dt}<br>${info.payload.rqth}`);
+                        marks[info.payload.index].addEventListener("click", () => { marks[info.payload.index].openInfoWindow(marker_info); });
+                        markers.addMarker(marks[info.payload.index]);
+                    }
+                });
+            }
         }
     };
     socket.onerror = () => { alert("服务连接失败"); };

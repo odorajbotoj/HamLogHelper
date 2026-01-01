@@ -1,5 +1,14 @@
 package main
 
+type DataType int
+
+const (
+	ServerDefault DataType = iota
+	ConnectData
+	MessageData
+	JsonData
+)
+
 type LogLine struct {
 	Index    uint64 `json:"index"`
 	Callsign string `json:"callsign"`
@@ -16,4 +25,10 @@ type LogLine struct {
 	TAnt     string `json:"tant"`
 	TQth     string `json:"tqth"`
 	Rmks     string `json:"rmks"`
+}
+
+type Data struct {
+	Type    DataType `json:"type"`
+	Message string   `json:"message"`
+	Payload LogLine  `json:"payload,omitempty"`
 }
