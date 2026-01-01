@@ -3,6 +3,7 @@
 *.xlsx
 *.adi
 *.adif
+*.hjl
 /HamLogHelper*
 tmpl.json
 dict.json
