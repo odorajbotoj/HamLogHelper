@@ -32,3 +32,8 @@ type Data struct {
 	Message string   `json:"message"`
 	Payload LogLine  `json:"payload,omitempty"`
 }
+
+type ExportData struct {
+	Name string
+	Data []LogLine
+}

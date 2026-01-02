@@ -23,6 +23,8 @@ const VERSION string = "v1.0.0"
 //go:embed web/*
 var embedFiles embed.FS
 
+var indexTmpl, exportTmpl *template.Template
+
 // tmpl & dict
 var tmplJson []byte
 var dictJson []byte
@@ -54,9 +56,9 @@ func main() {
 	}
 
 	// 创建服务
-	tmpl := template.Must(template.ParseFS(filesys, "index.html"))
+	indexTmpl = template.Must(template.ParseFS(filesys, "index.html"))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := tmpl.Execute(w, tdtKey); err != nil {
+		if err := indexTmpl.Execute(w, tdtKey); err != nil {
 			http.Error(w, "Template error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -74,6 +76,13 @@ func main() {
 
 	// 注册ws
 	http.HandleFunc("/ws", wsService)
+
+	// 导出功能
+	exportTmpl = template.Must(template.ParseFS(filesys, "export.html"))
+	http.HandleFunc("/export", exportService)
+	http.HandleFunc("/getadif", getADIF)
+	http.HandleFunc("/getcsv", getCSV)
+	http.HandleFunc("/getxlsx", getXLSX)
 
 	// 启动服务
 	log.Println("Server listening on local port 5973 ...")

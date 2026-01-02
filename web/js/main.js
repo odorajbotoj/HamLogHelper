@@ -291,14 +291,14 @@ function onload() {
 
     // 询问文件名
     logname = prompt("输入要打开的文件名（不存在则新建）", "newlogbook");
-
+    document.getElementById("exportlink").href = `/export?n=${logname}`;
     // ws
     socket = new WebSocket(`ws://${window.location.host}/ws`);
     socket.onopen = () => { socket.send(JSON.stringify({ "type": 1, "message": logname })); };
     socket.onmessage = (ev) => {
         let info = JSON.parse(String(ev.data));
         if (info.type == 2 && info.message == "OK") {
-            document.getElementById("logtitle").innerText = "记录 | 服务已连接";
+            document.getElementById("connected").innerText = " | 服务已连接";
         } else if (info.type == 3) {
             // 更新提交提示
             nextlog = nextlog > info.payload.index ? nextlog : info.payload.index + 1;

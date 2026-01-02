@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"io"
 	"log"
@@ -18,12 +17,17 @@ var upgrader = websocket.Upgrader{
 }
 
 func wsService(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Bad Method.", http.StatusMethodNotAllowed)
+		return
+	}
 	// 升级协议
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	log.Println("Client connected.")
 	defer conn.Close()
 	// log计数
 	var count uint64 = 0
@@ -74,33 +78,9 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 					log.Printf("Failed to open log file. %v\n", err)
 					return
 				}
-				// 重置光标位置
-				_, err = file.Seek(0, io.SeekStart)
+				// 解析
+				lines, err := parseLog(file)
 				if err != nil {
-					log.Printf("File Seek Error. %v\n", err)
-					return
-				}
-				// 按行读取解析
-				lst := newLinkedList()
-				scanner := bufio.NewScanner(file)
-				for scanner.Scan() {
-					var line LogLine
-					if err := json.Unmarshal(scanner.Bytes(), &line); err != nil {
-						log.Printf("Failed to unmarshal a line. %v\n", err)
-						continue
-					}
-					lst.set(line.Index, &line)
-				}
-				lines := lst.dumpTill(lst.maxPos)
-				// 清空文件
-				err = file.Truncate(0)
-				if err != nil {
-					log.Printf("Failed to truncate file. %v", err)
-					return
-				}
-				_, err = file.Seek(0, io.SeekStart)
-				if err != nil {
-					log.Printf("File Seek Error. %v\n", err)
 					return
 				}
 				// 写回文件和前端
@@ -111,15 +91,6 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 					bReData, err := json.Marshal(reData)
 					if err != nil {
 						log.Printf("Cannot marshal json data. %v\n", err)
-						return
-					}
-					bLine, err := json.Marshal(line)
-					if err != nil {
-						log.Printf("Cannot marshal json line data. %v\n", err)
-						return
-					}
-					if _, err := file.Write(append(bLine, '\n')); err != nil {
-						log.Printf("Failed to write to file. %v\n", err)
 						return
 					}
 					if err := conn.WriteMessage(messageType, bReData); err != nil {
@@ -178,5 +149,31 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
+	}
+}
+
+func exportService(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Bad Method.", http.StatusMethodNotAllowed)
+		return
+	}
+	name := r.URL.Query().Get("n")
+	if name == "" {
+		http.Error(w, "Bad args.", http.StatusBadRequest)
+		return
+	}
+	file, err := os.OpenFile(name+".hjl", os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		http.Error(w, "File error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	lines, err := parseLog(file)
+	if err != nil {
+		http.Error(w, "Parse data error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := exportTmpl.Execute(w, ExportData{name, lines}); err != nil {
+		http.Error(w, "Template error: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
 }

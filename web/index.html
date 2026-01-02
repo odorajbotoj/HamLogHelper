@@ -8,7 +8,7 @@
     <title>业余无线电通联记录助手 - BG4QBF</title>
     <link rel="stylesheet" href="css/index.css" />
     <script src="http://api.tianditu.gov.cn/api?v=4.0&tk={{.}}" type="text/javascript"></script>
-    <script src="js/main.js" defer></script>
+    <script src="js/main.js" type="text/javascript" defer></script>
 </head>
 
 <body onload="onload()">
@@ -17,7 +17,7 @@
     </header>
     <div id="mainpage">
         <div class="field" id="log">
-            <p class="fieldtitle" id="logtitle">记录</p>
+            <p class="fieldtitle" id="logtitle">记录<a href="#" id="exportlink"> 导出</a><span id="connected"></span></p>
             <div id="logs">
                 <table border="1" id="logtable">
                     <tr>

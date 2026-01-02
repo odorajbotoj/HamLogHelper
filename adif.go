@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"io"
 	"strconv"
 )
 
@@ -48,7 +48,7 @@ var BAND_TABLE [33]bandInfo = [33]bandInfo{
 	{"submm", 300000, 7500000},
 }
 
-func write2adif(file *os.File, data LogLine) error {
+func writeADIF(w io.Writer, data LogLine) error {
 	// 解析日期时间
 	var dt [5]int
 	var freq [2]float64
@@ -75,7 +75,7 @@ func write2adif(file *os.File, data LogLine) error {
 	var freqRx string = strconv.FormatFloat(freq[0], 'f', -1, 64)
 	// 格式化输出一行ADIF
 	_, err := fmt.Fprintf(
-		file,
+		w,
 		"<CALL:%d>%s <BAND:%d>%s <MODE:%d>%s <QSO_DATE:8>%04d%02d%02d <TIME_ON:6>%02d%02d00 <FREQ:%d>%s <BAND_RX:%d>%s <FREQ_RX:%d>%s <EOR>\n",
 		len(data.Callsign), data.Callsign,
 		len(BAND_TABLE[bandTxIdx].name), BAND_TABLE[bandTxIdx].name,
@@ -90,6 +90,5 @@ func write2adif(file *os.File, data LogLine) error {
 	if err != nil {
 		return err
 	}
-	// 落盘
-	return file.Sync()
+	return nil
 }

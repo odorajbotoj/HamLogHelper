@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <title>导出 - 业余无线电通联记录助手 - BG4QBF</title>
+    <style>
+        body {
+            width: 100dvw;
+        }
+    </style>
+    <script type="text/javascript" defer>
+        function check(a) {
+            let cbs = document.getElementsByClassName('cb');
+            for (let i = 0; i < cbs.length; i++) {
+                switch (a) {
+                    case 0:
+                        cbs[i].checked = false;
+                        break;
+                    case 1:
+                        cbs[i].checked = !cbs[i].checked;
+                        break;
+                    case 2:
+                        cbs[i].checked = true;
+                        break;
+                }
+            }
+        }
+        function getselected() {
+            let ret = "";
+            ["index", "callsign", "dt", "freq", "mode",
+                "rst", "rrig", "rpwr", "rant", "rqth",
+                "trig", "tpwr", "tant", "tqth", "rmks"]
+                .forEach((n) => {
+                    ret += document.getElementById(`sel_${n}`).checked ? "1" : "0";
+                });
+            return ret;
+        }
+    </script>
+</head>
+
+<body>
+    <h1>导出 - 业余无线电通联记录助手</h1>
+    <p>文件: {{ .Name }}.hjl</p>
+    <div>
+        <div>
+            <input type="button" onclick="window.open('/getadif?n={{ .Name }}')" value="ADIF">
+            <input type="button" onclick="window.open('/getcsv?n={{ .Name }}&s='+getselected())" value="CSV">
+            <input type="button" onclick="window.open('/getxlsx?n={{ .Name }}&s='+getselected())" value="XLSX">
+        </div>
+        <div>
+            <input type="button" onclick="check(2)" value="全选">
+            <input type="button" onclick="check(0)" value="全不选">
+            <input type="button" onclick="check(1)" value="反选">
+        </div>
+        <table border="1">
+            <tr>
+                <td>选择</td>
+                <td><input type="checkbox" class="sel" id="sel_index" checked>位号</td>
+                <td><input type="checkbox" class="sel" id="sel_callsign" checked>呼号</td>
+                <td><input type="checkbox" class="sel" id="sel_dt" checked>日期时间</td>
+                <td><input type="checkbox" class="sel" id="sel_freq" checked>频率</td>
+                <td><input type="checkbox" class="sel" id="sel_mode" checked>模式</td>
+                <td><input type="checkbox" class="sel" id="sel_rst" checked>信号</td>
+                <td><input type="checkbox" class="sel" id="sel_rrig" checked>对方设备</td>
+                <td><input type="checkbox" class="sel" id="sel_rpwr" checked>对方功率</td>
+                <td><input type="checkbox" class="sel" id="sel_rant" checked>对方天线</td>
+                <td><input type="checkbox" class="sel" id="sel_rqth" checked>对方台址</td>
+                <td><input type="checkbox" class="sel" id="sel_trig" checked>己方设备</td>
+                <td><input type="checkbox" class="sel" id="sel_tpwr" checked>己方功率</td>
+                <td><input type="checkbox" class="sel" id="sel_tant" checked>己方天线</td>
+                <td><input type="checkbox" class="sel" id="sel_tqth" checked>己方台址</td>
+                <td><input type="checkbox" class="sel" id="sel_rmks" checked>备注</td>
+            </tr>
+            {{ range .Data }}
+            <tr>
+                <td></td>
+                <td>{{ .Index }}</td>
+                <td>{{ .Callsign }}</td>
+                <td>{{ .Dt }}</td>
+                <td>{{ .Freq }}</td>
+                <td>{{ .Mode }}</td>
+                <td>{{ .Rst }}</td>
+                <td>{{ .RRig }}</td>
+                <td>{{ .RPwr }}</td>
+                <td>{{ .RAnt }}</td>
+                <td>{{ .RQth }}</td>
+                <td>{{ .TRig }}</td>
+                <td>{{ .TPwr }}</td>
+                <td>{{ .TAnt }}</td>
+                <td>{{ .TQth }}</td>
+                <td>{{ .Rmks }}</td>
+            </tr>
+            {{ end }}
+        </table>
+    </div>
+</body>
+
+</html>
