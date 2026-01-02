@@ -19,18 +19,29 @@ by BG4QBF
 2. 根据个人需要创建模板与字典
 3. 运行主程序
 4. 访问浏览器 `localhost:5973` 打开前端页面
-5. 输入名称以打开日志, 程序会保存一份 `csv` 文件并同时导出一个可用于上传 lotw 的 (简单的) `adi` 文件
+5. 输入名称以打开日志, 程序会保存一份 `hjl` 文件 (`HamJsonLogs`)
 
 ## 填写注意
 
 + 模式仅允许搜索提示区列出的模式
 + 频率输入格式为 `%f/%f` , 前后两个小数, 中间斜杠隔开, 代表发射频率与频差. 如 `430.610/+9.0` , `438.5/+0.0`, `439.645/-9.0`
 
-## 输出数据说明
+## 数据导出
 
-1. 标准 csv (使用 `golang: encoding/csv` 库)
-   + 前后端除握手测试外, 交换数据均为 json 格式
-   + 数据字段如下
+当点击 "记录" 旁边的 "导出" 时, 您将打开一个新的页面. 您可以在这里导出您的记录.
+
+1. 简单的 ADIF 文件
+   + 仅包含如下字段
+     1. CALL
+     2. BAND
+     3. MODE
+     4. QSO_DATE
+     5. TIME_ON
+     6. FREQ
+     7. BAND_RX
+     8. FREQ_RX
+2. 标准 csv (使用 `golang: encoding/csv` 库)
+   + 可以自选要导出哪些信息
      1. 位号 - index
      2. 呼号 - callsign
      3. 日期时间 ( UTC ) - dt
@@ -46,16 +57,23 @@ by BG4QBF
      13. 己方天线 - tant
      14. 己方台址 - tqth
      15. 备注 - rmks
-2. 简单的 ADIF 文件
-   + 仅包含如下字段
-     1. CALL
-     2. BAND
-     3. MODE
-     4. QSO_DATE
-     5. TIME_ON
-     6. FREQ
-     7. BAND_RX
-     8. FREQ_RX
+3. XLSX 文件 (使用 `golang: github.com/xuri/excelize/v2` 库)
+   + 可以自选要导出哪些信息
+     1. 位号 - index
+     2. 呼号 - callsign
+     3. 日期时间 ( UTC ) - dt
+     4. 频率 - band
+     5. 模式 - mode
+     6. 信号 - rst
+     7. 对方设备 - rrig
+     8. 对方功率 - rpwr
+     9. 对方天线 - rant
+     10. 对方台址 - rqth
+     11. 己方设备 - trig
+     12. 己方功率 - tpwr
+     13. 己方天线 - tant
+     14. 己方台址 - tqth
+     15. 备注 - rmks
 
 ## 模板数据说明
 
