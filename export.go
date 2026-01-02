@@ -17,13 +17,13 @@ var fields []string = []string{
 }
 
 func getCellIdx(row, col int64) string {
-	colStr := ""
+	colStr := []byte{}
 	for col > 0 {
 		col -= 1
-		colStr += string('A' + col%26)
+		colStr = append(colStr, byte('A'+col%26))
 		col /= 26
 	}
-	return colStr + strconv.FormatInt(row, 10)
+	return string(colStr) + strconv.FormatInt(row, 10)
 }
 
 func getADIF(w http.ResponseWriter, r *http.Request) {
