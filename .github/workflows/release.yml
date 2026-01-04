@@ -45,3 +45,33 @@ jobs:
         with:
           name: auto-builds
           path: build/
+
+  upload-to-release:
+    needs:
+      - build
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: auto-builds
+          path: build/
+      - name: Upload
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/HamLogHelper-linux_386
+            build/HamLogHelper-linux_amd64
+            build/HamLogHelper-linux_arm
+            build/HamLogHelper-linux_arm64
+            build/HamLogHelper-linux_arm64
+            build/HamLogHelper-linux_riscv64
+            build/HamLogHelper-windows_386.exe
+            build/HamLogHelper-windows_amd64.exe
+            build/HamLogHelper-windows_arm.exe
+            build/HamLogHelper-windows_arm64.exe
+            build/HamLogHelper-darwin_amd64
+            build/HamLogHelper-darwin_arm64
