@@ -67,7 +67,6 @@ jobs:
             build/HamLogHelper-linux_amd64
             build/HamLogHelper-linux_arm
             build/HamLogHelper-linux_arm64
-            build/HamLogHelper-linux_arm64
             build/HamLogHelper-linux_riscv64
             build/HamLogHelper-windows_386.exe
             build/HamLogHelper-windows_amd64.exe
