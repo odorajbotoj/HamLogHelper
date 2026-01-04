@@ -37,7 +37,7 @@ func getADIF(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
-	file, err := os.OpenFile(name+".hjl", os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile(name+".hjl", os.O_RDWR|os.O_SYNC, 0644)
 	if err != nil {
 		http.Error(w, "File error: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -78,7 +78,7 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
-	file, err := os.OpenFile(name+".hjl", os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile(name+".hjl", os.O_RDWR|os.O_SYNC, 0644)
 	if err != nil {
 		http.Error(w, "File error: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -179,7 +179,7 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
-	file, err := os.OpenFile(name+".hjl", os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile(name+".hjl", os.O_RDWR|os.O_SYNC, 0644)
 	if err != nil {
 		http.Error(w, "File error: "+err.Error(), http.StatusInternalServerError)
 		return

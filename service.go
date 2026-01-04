@@ -73,7 +73,7 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				// 打开文件
-				file, err = os.OpenFile(inData.Message+".hjl", os.O_CREATE|os.O_RDWR, 0644)
+				file, err = os.OpenFile(inData.Message+".hjl", os.O_CREATE|os.O_RDWR|os.O_SYNC, 0644)
 				if err != nil {
 					log.Printf("Failed to open log file. %v\n", err)
 					return
@@ -128,11 +128,6 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 					log.Printf("File write failed: %v", err)
 					return
 				}
-				err = file.Sync()
-				if err != nil {
-					log.Printf("File sync failed: %v", err)
-					return
-				}
 				// 写入前端
 				var reData Data
 				reData.Type = JsonData
@@ -162,7 +157,7 @@ func exportService(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
-	file, err := os.OpenFile(name+".hjl", os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile(name+".hjl", os.O_RDWR|os.O_SYNC, 0644)
 	if err != nil {
 		http.Error(w, "File error: "+err.Error(), http.StatusInternalServerError)
 		return
