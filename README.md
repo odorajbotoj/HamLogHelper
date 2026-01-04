@@ -30,6 +30,8 @@ by BG4QBF
 
 当点击 "记录" 旁边的 "导出" 时, 您将打开一个新的页面. 您可以在这里导出您的记录.
 
+若勾选 "仅保存北京时间hh:mm", 则时间将不会保留 UTC 的 `yyyy-mm-ddThh:mm`, 而是仅保留北京时间的小时和分钟 `hh:mm`.
+
 1. 简单的 ADIF 文件
    + 仅包含如下字段
      1. CALL
@@ -44,7 +46,7 @@ by BG4QBF
    + 可以自选要导出哪些信息
      1. 位号 - index
      2. 呼号 - callsign
-     3. 日期时间 ( UTC ) - dt
+     3. 时间 - dt
      4. 频率 - band
      5. 模式 - mode
      6. 信号 - rst
@@ -61,7 +63,7 @@ by BG4QBF
    + 可以自选要导出哪些信息
      1. 位号 - index
      2. 呼号 - callsign
-     3. 日期时间 ( UTC ) - dt
+     3. 时间 - dt
      4. 频率 - band
      5. 模式 - mode
      6. 信号 - rst
@@ -164,6 +166,10 @@ by BG4QBF
     }
 }
 ```
+
+## 鸣谢
+
++ 江苏省无线电和定向运动协会 BY4RSA
 
 ## LICENSE
 
