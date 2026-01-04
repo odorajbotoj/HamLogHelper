@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -72,6 +73,11 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
+	bjthhmm := r.URL.Query().Get("bjthhmm")
+	if bjthhmm == "" || len(bjthhmm) != 1 {
+		http.Error(w, "Bad args.", http.StatusBadRequest)
+		return
+	}
 	file, err := os.OpenFile(name+".hjl", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		http.Error(w, "File error: "+err.Error(), http.StatusInternalServerError)
@@ -101,7 +107,16 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 			cl = append(cl, line.Callsign)
 		}
 		if selects[2] == '1' {
-			cl = append(cl, line.Dt)
+			if bjthhmm == "1" {
+				t, err := time.Parse("2006-01-02T15:04", line.Dt)
+				if err == nil {
+					cl = append(cl, t.Add(8*time.Hour).Format("15:04"))
+				} else {
+					cl = append(cl, err.Error())
+				}
+			} else {
+				cl = append(cl, line.Dt)
+			}
 		}
 		if selects[3] == '1' {
 			cl = append(cl, line.Freq)
@@ -159,6 +174,11 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
+	bjthhmm := r.URL.Query().Get("bjthhmm")
+	if bjthhmm == "" || len(bjthhmm) != 1 {
+		http.Error(w, "Bad args.", http.StatusBadRequest)
+		return
+	}
 	file, err := os.OpenFile(name+".hjl", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		http.Error(w, "File error: "+err.Error(), http.StatusInternalServerError)
@@ -195,7 +215,16 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 			idx++
 		}
 		if selects[2] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Dt)
+			if bjthhmm == "1" {
+				t, err := time.Parse("2006-01-02T15:04", line.Dt)
+				if err == nil {
+					xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), t.Add(8*time.Hour).Format("15:04"))
+				} else {
+					xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), err.Error())
+				}
+			} else {
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Dt)
+			}
 			idx++
 		}
 		if selects[3] == '1' {

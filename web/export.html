@@ -11,22 +11,6 @@
         }
     </style>
     <script type="text/javascript" defer>
-        function check(a) {
-            let cbs = document.getElementsByClassName('cb');
-            for (let i = 0; i < cbs.length; i++) {
-                switch (a) {
-                    case 0:
-                        cbs[i].checked = false;
-                        break;
-                    case 1:
-                        cbs[i].checked = !cbs[i].checked;
-                        break;
-                    case 2:
-                        cbs[i].checked = true;
-                        break;
-                }
-            }
-        }
         function getselected() {
             let ret = "";
             ["index", "callsign", "dt", "freq", "mode",
@@ -45,14 +29,17 @@
     <p>文件: {{ .Name }}.hjl</p>
     <div>
         <div>
-            <input type="button" onclick="window.open('/getadif?n={{ .Name }}')" value="ADIF">
-            <input type="button" onclick="window.open('/getcsv?n={{ .Name }}&s='+getselected())" value="CSV">
-            <input type="button" onclick="window.open('/getxlsx?n={{ .Name }}&s='+getselected())" value="XLSX">
+            <input type="checkbox" id="bjt">
+            <label for="bjt">仅保存北京时间hh:mm</label>
         </div>
         <div>
-            <input type="button" onclick="check(2)" value="全选">
-            <input type="button" onclick="check(0)" value="全不选">
-            <input type="button" onclick="check(1)" value="反选">
+            <input type="button" onclick="window.open('/getadif?n={{ .Name }}')" value="ADIF">
+            <input type="button"
+                onclick="window.open('/getcsv?n={{ .Name }}&s='+getselected()+'&bjthhmm='+(document.getElementById('bjt').checked ? '1' : '0'))"
+                value="CSV">
+            <input type="button"
+                onclick="window.open('/getxlsx?n={{ .Name }}&s='+getselected()+'&bjthhmm='+(document.getElementById('bjt').checked ? '1' : '0'))"
+                value="XLSX">
         </div>
         <table border="1">
             <tr>
