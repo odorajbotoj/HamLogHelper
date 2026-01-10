@@ -72,6 +72,10 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 					log.Printf("Failed to write to client. %v\n", err)
 					return
 				}
+				if inData.Message == "" {
+					log.Println("Empty file name.")
+					return
+				}
 				// 打开文件
 				file, err = os.OpenFile(inData.Message+".hjl", os.O_CREATE|os.O_RDWR|os.O_SYNC, 0644)
 				if err != nil {

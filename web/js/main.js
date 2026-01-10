@@ -86,46 +86,48 @@ function onload() {
     xhrdict.send();
 
     // 天地图
-    map = new T.Map("mapdiv");
-    map.centerAndZoom(new T.LngLat(116.40769, 39.89945), 12);
-    geocoder = new T.Geocoder();
-    markers = new T.MarkerClusterer(map, { markers: [] });
+    if (T) {
+        map = new T.Map("mapdiv");
+        map.centerAndZoom(new T.LngLat(116.40769, 39.89945), 12);
+        geocoder = new T.Geocoder();
+        markers = new T.MarkerClusterer(map, { markers: [] });
 
-    // 设置滚动
-    document.getElementById("mapdiv").addEventListener("wheel", (e) => {
-        let direction = e.deltaY > 0 ? "up" : "down";
-        direction === "up" ? map.zoomOut() : map.zoomIn();
-        e.preventDefault();
-    });
+        // 设置滚动
+        document.getElementById("mapdiv").addEventListener("wheel", (e) => {
+            let direction = e.deltaY > 0 ? "up" : "down";
+            direction === "up" ? map.zoomOut() : map.zoomIn();
+            e.preventDefault();
+        });
 
-    // 设置控件
-    let ctrl_zoom = new T.Control.Zoom();
-    ctrl_zoom.setPosition(T_ANCHOR_BOTTOM_RIGHT);
-    map.addControl(ctrl_zoom);
-    let ctrl_scale = new T.Control.Scale();
-    map.addControl(ctrl_scale);
-    let ctrl_maptype = new T.Control.MapType();
-    map.addControl(ctrl_maptype);
+        // 设置控件
+        let ctrl_zoom = new T.Control.Zoom();
+        ctrl_zoom.setPosition(T_ANCHOR_BOTTOM_RIGHT);
+        map.addControl(ctrl_zoom);
+        let ctrl_scale = new T.Control.Scale();
+        map.addControl(ctrl_scale);
+        let ctrl_maptype = new T.Control.MapType();
+        map.addControl(ctrl_maptype);
 
-    // 搜索
-    local_search = new T.LocalSearch(map, {
-        pageCapacity: 10, onSearchComplete: (rst) => {
-            let rst_suggests = rst.getSuggests();
-            if (rst_suggests) {
-                let mapsuggests_div = document.getElementById("mapsuggests");
-                mapsuggests_div.innerHTML = "";
-                let suggests = "<ol>";
-                for (let i = 0; i < rst_suggests.length; i++) {
-                    suggests += `<li>[天地图]&nbsp;<a href="javascript:void(0);" onclick="let element=document.getElementById('rqth');element.value='${rst_suggests[i].address + rst_suggests[i].name}';element.focus();">${rst_suggests[i].name}</a><i>${rst_suggests[i].address}</i></li>`
+        // 搜索
+        local_search = new T.LocalSearch(map, {
+            pageCapacity: 10, onSearchComplete: (rst) => {
+                let rst_suggests = rst.getSuggests();
+                if (rst_suggests) {
+                    let mapsuggests_div = document.getElementById("mapsuggests");
+                    mapsuggests_div.innerHTML = "";
+                    let suggests = "<ol>";
+                    for (let i = 0; i < rst_suggests.length; i++) {
+                        suggests += `<li>[天地图]&nbsp;<a href="javascript:void(0);" onclick="let element=document.getElementById('rqth');element.value='${rst_suggests[i].address + rst_suggests[i].name}';element.focus();">${rst_suggests[i].name}</a><i>${rst_suggests[i].address}</i></li>`
+                    }
+                    suggests += "</ol>"
+                    mapsuggests_div.innerHTML = suggests;
                 }
-                suggests += "</ol>"
-                mapsuggests_div.innerHTML = suggests;
             }
-        }
-    });
-    document.getElementById("rqth").addEventListener("input", () => {
-        local_search.search(document.getElementById("rqth").value, 4);
-    });
+        });
+        document.getElementById("rqth").addEventListener("input", () => {
+            local_search.search(document.getElementById("rqth").value, 4);
+        });
+    }
 
     // 简写搜索
     // 模式
@@ -291,6 +293,10 @@ function onload() {
 
     // 询问文件名
     logname = prompt("输入要打开的文件名（不存在则新建）", "newlogbook");
+    if (logname == null || logname == "") {
+        alert("您没有输入文件名");
+        return;
+    }
     document.getElementById("exportlink").href = `/export?n=${logname}`;
     // ws
     socket = new WebSocket(`ws://${window.location.host}/ws`);
@@ -318,13 +324,13 @@ function onload() {
                 document.getElementById(`log_tr_i${info.payload.index}`).innerHTML = inner;
             }
             // 自动滚动
-            let logdiv = document.getElementById("logs");
+            let logdiv = document.getElementById("logdiv");
             logdiv.scroll({
                 top: logdiv.scrollHeight,
                 left: 0,
                 behavior: "smooth",
             });
-            if (info.message == "ADD" || info.message == "EDIT") {
+            if (T && (info.message == "ADD" || info.message == "EDIT")) {
                 // 地理编码
                 geocoder.getPoint(info.payload.rqth, (rst) => {
                     if (rst.getStatus() == 0) {

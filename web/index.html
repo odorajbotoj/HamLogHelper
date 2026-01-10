@@ -7,7 +7,30 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <title>业余无线电通联记录助手 - BG4QBF</title>
     <link rel="stylesheet" href="css/index.css" />
-    <script src="http://api.tianditu.gov.cn/api?v=4.0&tk={{.}}" type="text/javascript"></script>
+    {{ with . }}
+    <script src="http://api.tianditu.gov.cn/api?v=4.0&tk={{ . }}" type="text/javascript"></script>
+    <style>
+        #logdiv {
+            grid-column: 1;
+            width: calc(46dvw - 2.4px);
+        }
+
+        #mapdiv {
+            grid-column: 2;
+            grid-row: 1;
+            width: calc(46dvw - 2.4px);
+            height: calc(41dvh - 2.4px)
+        }
+    </style>
+    {{ else }}
+    <style>
+        #logdiv {
+            grid-column-start: 1;
+            grid-column-end: 3;
+            width: calc(96dvw - 2.4px);
+        }
+    </style>
+    {{ end }}
     <script src="js/main.js" type="text/javascript" defer></script>
 </head>
 
@@ -16,8 +39,8 @@
         HamLogHelper 业余无线电通联记录助手
     </header>
     <div id="mainpage">
-        <div class="field" id="log">
-            <p class="fieldtitle" id="logtitle">记录<a href="#" id="exportlink"> 导出</a><span id="connected"></span></p>
+        <div class="field" id="logdiv">
+            <p class="fieldtitle">记录<a href="#" id="exportlink"> 导出</a><span id="connected"></span></p>
             <div id="logs">
                 <table border="1" id="logtable">
                     <tr>
@@ -39,7 +62,13 @@
                     </tr>
                 </table>
             </div>
-            <hr>
+        </div>
+        {{ with . }}
+        <div class="field" id="mapdiv">
+        </div>
+        {{ end }}
+        <div class="field" id="inputdiv">
+            <p class="fieldtitle">输入</p>
             <div id="inputs">
                 <form tabindex="-1" id="infoform">
                     <div id="formdiv">
@@ -115,12 +144,9 @@
                 </form>
             </div>
         </div>
-        <div class="field" id="map">
-            <p class="fieldtitle">地图</p>
-            <div id="mapdiv"></div>
-            <hr>
+        <div class="field" id="searchdiv">
+            <p class="fieldtitle">查询<span id="tmpldone"></span><span id="dictdone"></span></p>
             <div id="search">
-                <p>搜索<span id="tmpldone"></span><span id="dictdone"></span></p>
                 <div id="suggests"></div>
                 <div id="mapsuggests"></div>
             </div>

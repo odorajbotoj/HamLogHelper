@@ -33,11 +33,8 @@ func main() {
 	log.Printf("\nHamLogHelper 业余无线电通联记录助手\nby odorajbotoj (BG4QBF)\nVERSION: %s", VERSION)
 
 	// 读取天地图api-key
-	tdtKeyBytes, err := os.ReadFile("tianditu-key.txt")
+	tdtKeyBytes, _ := os.ReadFile("tianditu-key.txt")
 	tdtKey := strings.TrimSpace(string(tdtKeyBytes))
-	if err != nil || tdtKey == "" {
-		log.Fatalln("Cannot read tianditu-key.txt or file is empty.")
-	}
 
 	// 读取tmpl和dict
 	if file, err := os.Open("tmpl.json"); err == nil {

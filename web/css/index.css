@@ -19,11 +19,19 @@ header {
     color: #fff;
 }
 
+footer {
+    display: flex;
+    justify-content: center;
+    width: 100dvw;
+    height: 5dvh;
+    background-color: #45a1ff;
+    color: #fff;
+}
+
 #mainpage {
     width: 100dvw;
     height: 90dvh;
-    display: flex;
-    flex-direction: row;
+    display: grid;
 }
 
 .field {
@@ -31,8 +39,6 @@ header {
     border: 1.2px solid black;
     border-radius: 3.6px;
     padding: 1dvh 1dvw;
-    width: 50dvw;
-    height: calc(86dvh - 2.4px);
 }
 
 .fieldtitle {
@@ -40,21 +46,19 @@ header {
     border: 0;
     padding: 0 1dvw;
     height: 24px;
-    background: white;
 }
 
-hr {
-    margin: 1dvh 0;
-    border: 0.8px solid black;
-}
-
-#logs {
-    height: calc(41dvh - 14px);
+#logdiv {
+    grid-row: 1;
+    height: calc(41dvh - 2.4px);
     overflow: auto;
 }
 
-#inputs {
-    height: calc(41dvh - 14px);
+#inputdiv {
+    grid-column: 1;
+    grid-row: 2;
+    height: calc(41dvh - 2.4px);
+    width: calc(46dvw - 2.4px);
     overflow: auto;
 }
 
@@ -63,6 +67,16 @@ hr {
     grid-template-columns: auto auto auto 1fr;
     gap: 0.5dvw;
 }
+
+#searchdiv {
+    grid-column: 2;
+    grid-row: 2;
+    height: calc(41dvh - 2.4px);
+    width: calc(46dvw - 2.4px);
+    overflow: auto;
+}
+
+/* inputs */
 
 #callsignlabel {
     grid-column: 3;
@@ -289,20 +303,4 @@ hr {
     grid-row: 15;
 }
 
-#mapdiv {
-    height: calc(41dvh - 14px);
-}
-
-#search {
-    height: calc(41dvh - 14px);
-    overflow: auto;
-}
-
-footer {
-    display: flex;
-    justify-content: center;
-    width: 100dvw;
-    height: 5dvh;
-    background-color: #45a1ff;
-    color: #fff;
-}
+/* inputs end */
