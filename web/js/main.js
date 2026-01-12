@@ -11,6 +11,11 @@ var re = new RegExp("^(([1-9]\\d*)|0)\\.\\d+/[+-](([1-9]\\d*)|0)\\.\\d+$");
 var nextlog = 1;
 var marks = {};
 
+var dynamicRig = new Set();
+var dynamicPwr = new Set();
+var dynamicAnt = new Set();
+var dynamicQth = new Set();
+
 const ALLOWED_MODES = [
     "AM", "ARDOP", "ATV", "CHIP", "CLO", "CONTESTI", "CW", "DIGITALVOICE", "DOMINO", "DYNAMIC", "FAX",
     "FM", "FSK441", "FSK", "FT8", "HELL", "ISCAT", "JT4", "JT6M", "JT9", "JT44", "JT65", "MFSK", "MSK144",
@@ -117,10 +122,9 @@ function onload() {
                     mapsuggests_div.innerHTML = "";
                     let suggests = "<ol>";
                     for (let i = 0; i < rst_suggests.length; i++) {
-                        suggests += `<li>[天地图]&nbsp;<a href="javascript:void(0);" onclick="let element=document.getElementById('rqth');element.value='${rst_suggests[i].address + rst_suggests[i].name}';element.focus();">${rst_suggests[i].name}</a><i>${rst_suggests[i].address}</i></li>`
+                        suggests += `<li>[天地图]&nbsp;<a href="javascript:void(0);" onclick="let element=document.getElementById('rqth');element.value='${rst_suggests[i].address + rst_suggests[i].name}';element.focus();">${rst_suggests[i].name}</a><i>${rst_suggests[i].address}</i></li>`;
                     }
-                    suggests += "</ol>"
-                    mapsuggests_div.innerHTML = suggests;
+                    mapsuggests_div.innerHTML = suggests + "</ol>";
                 }
             }
         });
@@ -137,14 +141,13 @@ function onload() {
         let rst = ALLOWED_MODES.filter((item) => { return item.includes(ele.value); });
         let suggests_div = document.getElementById("suggests");
         suggests_div.innerHTML = "";
-        let mapsuggests_div = document.getElementById("mapsuggests");
-        mapsuggests_div.innerHTML = "";
+        document.getElementById("dynamics").innerHTML = "";
+        document.getElementById("mapsuggests").innerHTML = "";
         let suggests = "<ol>";
         for (let i in rst) {
             suggests += `<li>[模式]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('mode').value='${rst[i]}';document.getElementById('mode').focus();">${rst[i]}</a></li>`;
         }
-        suggests += "</ol>";
-        suggests_div.innerHTML = suggests;
+        suggests_div.innerHTML = suggests + "</ol>";
     });
     // 呼号 - 模板
     document.getElementById("callsign").addEventListener("input", () => {
@@ -153,14 +156,12 @@ function onload() {
         let rst = tmpljson.filter((item) => { return item.callsign.includes(ele.value); });
         let suggests_div = document.getElementById("suggests");
         suggests_div.innerHTML = "";
-        let mapsuggests_div = document.getElementById("mapsuggests");
-        mapsuggests_div.innerHTML = "";
+        document.getElementById("mapsuggests").innerHTML = "";
         let suggests = "<ol>";
         for (let i in rst) {
             suggests += `<li>[模板]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('callsign').value='${rst[i].callsign}';document.getElementById('rrig').value='${rst[i].rig}';document.getElementById('rpwr').value='${rst[i].pwr}';document.getElementById('rant').value='${rst[i].ant}';document.getElementById('rqth').value='${rst[i].qth}';document.getElementById('callsign').focus();">${rst[i].callsign}</a><i>${rst[i].rig}|${rst[i].pwr}|${rst[i].ant}|${rst[i].qth}</i></li>`;
         }
-        suggests += "</ol>";
-        suggests_div.innerHTML = suggests;
+        suggests_div.innerHTML = suggests + "</ol>";
     });
     // 设备 - 字典
     document.getElementById("rrig").addEventListener("input", () => {
@@ -172,14 +173,12 @@ function onload() {
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
-            let mapsuggests_div = document.getElementById("mapsuggests");
-            mapsuggests_div.innerHTML = "";
+            document.getElementById("mapsuggests").innerHTML = "";
             let suggests = "<ol>";
             for (let i in rst) {
-                suggests += `<li>[设备]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rrig').value='${rst[i]}';document.getElementById('rrig').focus();">${rst[i]}</a></li>`
+                suggests += `<li>[设备]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rrig').value='${rst[i]}';document.getElementById('rrig').focus();">${rst[i]}</a></li>`;
             }
-            suggests += "</ol>";
-            suggests_div.innerHTML = suggests;
+            suggests_div.innerHTML = suggests + "</ol>";
         }
     });
     // 功率 - 字典
@@ -192,14 +191,12 @@ function onload() {
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
-            let mapsuggests_div = document.getElementById("mapsuggests");
-            mapsuggests_div.innerHTML = "";
+            document.getElementById("mapsuggests").innerHTML = "";
             let suggests = "<ol>";
             for (let i in rst) {
-                suggests += `<li>[功率]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rpwr').value='${rst[i]}';document.getElementById('rpwr').focus();">${rst[i]}</a></li>`
+                suggests += `<li>[功率]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rpwr').value='${rst[i]}';document.getElementById('rpwr').focus();">${rst[i]}</a></li>`;
             }
-            suggests += "</ol>";
-            suggests_div.innerHTML = suggests;
+            suggests_div.innerHTML = suggests + "</ol>";
         }
     });
     // 天线 - 字典
@@ -212,14 +209,12 @@ function onload() {
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
-            let mapsuggests_div = document.getElementById("mapsuggests");
-            mapsuggests_div.innerHTML = "";
+            document.getElementById("mapsuggests").innerHTML = "";
             let suggests = "<ol>";
             for (let i in rst) {
-                suggests += `<li>[天线]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rant').value='${rst[i]}';document.getElementById('rant').focus();">${rst[i]}</a></li>`
+                suggests += `<li>[天线]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rant').value='${rst[i]}';document.getElementById('rant').focus();">${rst[i]}</a></li>`;
             }
-            suggests += "</ol>";
-            suggests_div.innerHTML = suggests;
+            suggests_div.innerHTML = suggests + "</ol>";
         }
     });
     // QTH - 字典
@@ -232,15 +227,54 @@ function onload() {
         if (rst) {
             let suggests_div = document.getElementById("suggests");
             suggests_div.innerHTML = "";
-            let mapsuggests_div = document.getElementById("mapsuggests");
-            mapsuggests_div.innerHTML = "";
             let suggests = "<ol>";
             for (let i in rst) {
-                suggests += `<li>[QTH]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rqth').value='${rst[i]}';document.getElementById('rqth').focus();">${rst[i]}</a></li>`
+                suggests += `<li>[QTH]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rqth').value='${rst[i]}';document.getElementById('rqth').focus();">${rst[i]}</a></li>`;
             }
-            suggests += "</ol>";
-            suggests_div.innerHTML = suggests;
+            suggests_div.innerHTML = suggests + "</ol>";
         }
+    });
+
+    // 自动历史输入
+    document.getElementById("rrig").addEventListener("focus", () => {
+        let suggests_div = document.getElementById("suggests");
+        suggests_div.innerHTML = "";
+        let dynamics_div = document.getElementById("dynamics");
+        let dynamics = "<ol>";
+        for (const item of dynamicRig) {
+            dynamics += `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rrig').value='${item}';document.getElementById('rrig').focus();">${item}</a></li>`;
+        }
+        dynamics_div.innerHTML = dynamics + "</ol>";
+    });
+    document.getElementById("rpwr").addEventListener("focus", () => {
+        let suggests_div = document.getElementById("suggests");
+        suggests_div.innerHTML = "";
+        let dynamics_div = document.getElementById("dynamics");
+        let dynamics = "<ol>";
+        for (const item of dynamicPwr) {
+            dynamics += `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rpwr').value='${item}';document.getElementById('rpwr').focus();">${item}</a></li>`;
+        }
+        dynamics_div.innerHTML = dynamics + "</ol>";
+    });
+    document.getElementById("rant").addEventListener("focus", () => {
+        let suggests_div = document.getElementById("suggests");
+        suggests_div.innerHTML = "";
+        let dynamics_div = document.getElementById("dynamics");
+        let dynamics = "<ol>";
+        for (const item of dynamicAnt) {
+            dynamics += `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rant').value='${item}';document.getElementById('rant').focus();">${item}</a></li>`;
+        }
+        dynamics_div.innerHTML = dynamics + "</ol>";
+    });
+    document.getElementById("rqth").addEventListener("focus", () => {
+        let suggests_div = document.getElementById("suggests");
+        suggests_div.innerHTML = "";
+        let dynamics_div = document.getElementById("dynamics");
+        let dynamics = "<ol>";
+        for (const item of dynamicQth) {
+            dynamics += `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rqth').value='${item}';document.getElementById('rqth').focus();">${item}</a></li>`;
+        }
+        dynamics_div.innerHTML = dynamics + "</ol>";
     });
 
     // 检查复选框状态
@@ -286,6 +320,10 @@ function onload() {
             alert("无法解析的频率");
             return;
         }
+        dynamicRig.add(document.getElementById("rrig").value);
+        dynamicPwr.add(document.getElementById("rpwr").value);
+        dynamicAnt.add(document.getElementById("rant").value);
+        dynamicQth.add(document.getElementById("rqth").value);
         socket.send(JSON.stringify(retjson));
         clear_input();
         document.getElementById("callsign").focus();
