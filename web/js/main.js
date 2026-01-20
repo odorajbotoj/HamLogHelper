@@ -190,6 +190,7 @@ function onload() {
         let suggests_div = document.getElementById("suggests");
         suggests_div.innerHTML = "";
         document.getElementById("mapsuggests").innerHTML = "";
+        document.getElementById("dynamics").innerHTML = "";
         let suggests = "<ol>";
         for (let i in rst) {
             suggests += `<li>[模板]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('callsign').value='${rst[i].callsign}';document.getElementById('rrig').value='${rst[i].rig}';document.getElementById('rpwr').value='${rst[i].pwr}';document.getElementById('rant').value='${rst[i].ant}';document.getElementById('rqth').value='${rst[i].qth}';document.getElementById('callsign').focus();">${rst[i].callsign}</a><i>${rst[i].rig}|${rst[i].pwr}|${rst[i].ant}|${rst[i].qth}</i></li>`;
