@@ -37,7 +37,7 @@ function update_dt() {
 // 输入框清理函数
 function clear_input() {
     document.querySelectorAll("input").forEach((ele) => { if (ele.type == "text" && !ele.disabled) ele.value = ""; });
-    document.getElementById("index").value = 0; // by default
+    document.getElementById("index").value = 0; // by default, means new log line
     document.getElementById("rst").value = 59; // by default
 }
 
@@ -66,6 +66,39 @@ function editlog(idx) {
         document.getElementById(`${keys[i]}`).value = document.getElementById(`log_td_i${idx}_${keys[i]}`).innerText;
     }
     document.getElementById("submit").value = `提交 #${idx}`;
+}
+
+function deletelog(idx) {
+    let retjson = {
+        "type": 3,
+        "message": "",
+        "payload": {
+            "index": -parseInt(document.getElementById(`log_td_i${idx}_index`).innerText),
+            "callsign": document.getElementById(`log_td_i${idx}_callsign`).innerText,
+            "dt": document.getElementById(`log_td_i${idx}_dt`).innerText,
+            "freq": document.getElementById(`log_td_i${idx}_freq`).innerText,
+            "mode": document.getElementById(`log_td_i${idx}_mode`).innerText,
+            "rst": parseInt(document.getElementById(`log_td_i${idx}_rst`).innerText),
+            "rrig": document.getElementById(`log_td_i${idx}_rrig`).innerText,
+            "rpwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
+            "rant": document.getElementById(`log_td_i${idx}_rant`).innerText,
+            "rqth": document.getElementById(`log_td_i${idx}_rqth`).innerText,
+            "trig": document.getElementById(`log_td_i${idx}_trig`).innerText,
+            "tpwr": document.getElementById(`log_td_i${idx}_tpwr`).innerText,
+            "tant": document.getElementById(`log_td_i${idx}_tant`).innerText,
+            "tqth": document.getElementById(`log_td_i${idx}_tqth`).innerText,
+            "rmks": document.getElementById(`log_td_i${idx}_rmks`).innerText
+        }
+    }
+    if (!ALLOWED_MODES.includes(retjson.payload.mode)) {
+        alert("未知的模式");
+        return;
+    }
+    if (!re.test(retjson.payload.freq)) {
+        alert("无法解析的频率");
+        return;
+    }
+    socket.send(JSON.stringify(retjson));
 }
 
 // 窗口加载完成执行
@@ -344,12 +377,13 @@ function onload() {
         if (info.type == 2 && info.message == "OK") {
             document.getElementById("connected").innerText = " | 服务已连接";
         } else if (info.type == 3) {
+            let markdel = false;
             // 更新提交提示
             nextlog = nextlog > info.payload.index ? nextlog : info.payload.index + 1;
             document.getElementById("submit").value = `提交 #${nextlog}`;
             // 记录表格
             let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
-            let inner = `<td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
+            let inner = `<td><input type="button" value="删除" onclick="deletelog(${info.payload.index})"></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
             for (let i = 0; i < keys.length; i++) {
                 inner += `<td id="log_td_i${info.payload.index}_${keys[i]}">${info.payload[keys[i]]}</td>`;
             }
@@ -359,6 +393,14 @@ function onload() {
                 newtr.innerHTML = inner;
                 document.getElementById("logtable").appendChild(newtr);
             } else if (info.message == "EDIT") {
+                if (info.payload.index < 0) {
+                    info.payload.index = -info.payload.index;
+                    markdel = true;
+                    inner = `<td></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})"><del>${info.payload.index}</del></a></td>`;
+                    for (let i = 0; i < keys.length; i++) {
+                        inner += `<td id="log_td_i${info.payload.index}_${keys[i]}"><del>${info.payload[keys[i]]}<del></td>`;
+                    }
+                }
                 document.getElementById(`log_tr_i${info.payload.index}`).innerHTML = inner;
             }
             // 自动滚动
@@ -368,7 +410,7 @@ function onload() {
                 left: 0,
                 behavior: "smooth",
             });
-            if (T && (info.message == "ADD" || info.message == "EDIT")) {
+            if (T && (info.message == "ADD" || info.message == "EDIT") && !markdel) {
                 // 地理编码
                 geocoder.getPoint(info.payload.rqth, (rst) => {
                     if (rst.getStatus() == 0) {
