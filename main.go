@@ -81,6 +81,10 @@ func main() {
 	http.HandleFunc("/getcsv", getCSV)
 	http.HandleFunc("/getxlsx", getXLSX)
 
+	// 编辑数据库
+	http.Handle("/dbeditor.html", fileServer)
+	http.HandleFunc("/editdb", editdbService)
+
 	// 启动服务
 	log.Println("Server listening on local port 5973 ...")
 	if err = http.ListenAndServe("localhost:5973", nil); err != nil {

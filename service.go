@@ -176,3 +176,37 @@ func exportService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func editdbService(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Bad Method.", http.StatusMethodNotAllowed)
+		return
+	}
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Bad Form.", http.StatusBadRequest)
+		return
+	}
+	t := r.Form.Get("type")
+	if t == "tmpl" {
+		data := []byte(r.Form.Get("payload"))
+		if !json.Valid(data) {
+			http.Error(w, "Invalid Data.", http.StatusBadRequest)
+			return
+		}
+		os.WriteFile("tmpl.json", data, 0644)
+		tmplJson = data
+	} else if t == "dict" {
+		data := []byte(r.Form.Get("payload"))
+		if !json.Valid(data) {
+			http.Error(w, "Invalid Data.", http.StatusBadRequest)
+			return
+		}
+		os.WriteFile("dict.json", data, 0644)
+		dictJson = data
+	} else {
+		http.Error(w, "Bad Data Type.", http.StatusBadRequest)
+		return
+	}
+	w.Write([]byte("<!DOCTYPE html><html><head><meta charset='utf-8' /><title>跳转中</title></head><body onload='setInterval(() => { location.replace(`http://${window.location.host}/dbeditor.html`); }, 1500);'><h1>成功！正在返回……</h1><a href='javascript:void(0);' onclick='location.replace(`http://${window.location.host}/dbeditor.html`);'>也可点击此处手动跳转</a></body></html>"))
+}
