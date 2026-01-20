@@ -10,8 +10,6 @@ v1.2.0
 
 [[业余无线电] 点名记录助手 版本更新介绍 HamLogHelper v1.2.0 by BG4QBF - Bilibili](https://www.bilibili.com/video/BV1xYknBzECA)
 
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115929186832864&bvid=BV1xYknBzECA&cid=35513107707&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
-
 ## 页面截图
 
 + 主页
