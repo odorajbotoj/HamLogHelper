@@ -37,44 +37,48 @@
                 value="XLSX">
         </div>
         <table border="1">
-            <tr>
-                <td>选择</td>
-                <td><input type="checkbox" class="sel" id="sel_index" checked>位号</td>
-                <td><input type="checkbox" class="sel" id="sel_callsign" checked>呼号</td>
-                <td><input type="checkbox" class="sel" id="sel_dt" checked>日期时间</td>
-                <td><input type="checkbox" class="sel" id="sel_freq" checked>频率</td>
-                <td><input type="checkbox" class="sel" id="sel_mode" checked>模式</td>
-                <td><input type="checkbox" class="sel" id="sel_rst" checked>信号</td>
-                <td><input type="checkbox" class="sel" id="sel_rrig" checked>对方设备</td>
-                <td><input type="checkbox" class="sel" id="sel_rpwr" checked>对方功率</td>
-                <td><input type="checkbox" class="sel" id="sel_rant" checked>对方天线</td>
-                <td><input type="checkbox" class="sel" id="sel_rqth" checked>对方台址</td>
-                <td><input type="checkbox" class="sel" id="sel_trig" checked>己方设备</td>
-                <td><input type="checkbox" class="sel" id="sel_tpwr" checked>己方功率</td>
-                <td><input type="checkbox" class="sel" id="sel_tant" checked>己方天线</td>
-                <td><input type="checkbox" class="sel" id="sel_tqth" checked>己方台址</td>
-                <td><input type="checkbox" class="sel" id="sel_rmks" checked>备注</td>
-            </tr>
-            {{ range .Data }}
-            <tr>
-                <td></td>
-                <td>{{ .Index }}</td>
-                <td>{{ .Callsign }}</td>
-                <td>{{ .Dt }}</td>
-                <td>{{ .Freq }}</td>
-                <td>{{ .Mode }}</td>
-                <td>{{ .Rst }}</td>
-                <td>{{ .RRig }}</td>
-                <td>{{ .RPwr }}</td>
-                <td>{{ .RAnt }}</td>
-                <td>{{ .RQth }}</td>
-                <td>{{ .TRig }}</td>
-                <td>{{ .TPwr }}</td>
-                <td>{{ .TAnt }}</td>
-                <td>{{ .TQth }}</td>
-                <td>{{ .Rmks }}</td>
-            </tr>
-            {{ end }}
+            <thead>
+                <tr>
+                    <td>选择</td>
+                    <td><input type="checkbox" class="sel" id="sel_index" checked>位号</td>
+                    <td><input type="checkbox" class="sel" id="sel_callsign" checked>呼号</td>
+                    <td><input type="checkbox" class="sel" id="sel_dt" checked>日期时间</td>
+                    <td><input type="checkbox" class="sel" id="sel_freq" checked>频率</td>
+                    <td><input type="checkbox" class="sel" id="sel_mode" checked>模式</td>
+                    <td><input type="checkbox" class="sel" id="sel_rst" checked>信号</td>
+                    <td><input type="checkbox" class="sel" id="sel_rrig" checked>对方设备</td>
+                    <td><input type="checkbox" class="sel" id="sel_rpwr" checked>对方功率</td>
+                    <td><input type="checkbox" class="sel" id="sel_rant" checked>对方天线</td>
+                    <td><input type="checkbox" class="sel" id="sel_rqth" checked>对方台址</td>
+                    <td><input type="checkbox" class="sel" id="sel_trig" checked>己方设备</td>
+                    <td><input type="checkbox" class="sel" id="sel_tpwr" checked>己方功率</td>
+                    <td><input type="checkbox" class="sel" id="sel_tant" checked>己方天线</td>
+                    <td><input type="checkbox" class="sel" id="sel_tqth" checked>己方台址</td>
+                    <td><input type="checkbox" class="sel" id="sel_rmks" checked>备注</td>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Data }}
+                <tr>
+                    <td></td>
+                    <td>{{ .Index }}</td>
+                    <td>{{ .Callsign }}</td>
+                    <td>{{ .Dt }}</td>
+                    <td>{{ .Freq }}</td>
+                    <td>{{ .Mode }}</td>
+                    <td>{{ .Rst }}</td>
+                    <td>{{ .RRig }}</td>
+                    <td>{{ .RPwr }}</td>
+                    <td>{{ .RAnt }}</td>
+                    <td>{{ .RQth }}</td>
+                    <td>{{ .TRig }}</td>
+                    <td>{{ .TPwr }}</td>
+                    <td>{{ .TAnt }}</td>
+                    <td>{{ .TQth }}</td>
+                    <td>{{ .Rmks }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
         </table>
     </div>
 </body>
