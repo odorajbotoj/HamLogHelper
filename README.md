@@ -4,7 +4,24 @@ HamLogHelper
 
 by BG4QBF
 
-v1.1.0
+v1.2.0
+
+## 使用视频
+
+[[业余无线电] 点名记录助手 版本更新介绍 HamLogHelper v1.2.0 by BG4QBF - Bilibili](https://www.bilibili.com/video/BV1xYknBzECA)
+
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115929186832864&bvid=BV1xYknBzECA&cid=35513107707&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
+## 页面截图
+
++ 主页
+  ![mainpage](https://raw.githubusercontent.com/odorajbotoj/HamLogHelper/refs/heads/main/assets/mainpage.png)
++ 主页 (无地图)
+  ![mainpage-nomap](https://raw.githubusercontent.com/odorajbotoj/HamLogHelper/refs/heads/main/assets/mainpage-nomap.png)
++ 导出
+  ![export](https://raw.githubusercontent.com/odorajbotoj/HamLogHelper/refs/heads/main/assets/export.png)
++ 数据库编辑
+  ![dbeditor](https://raw.githubusercontent.com/odorajbotoj/HamLogHelper/refs/heads/main/assets/dbeditor.png)
 
 ## 页面说明
 
@@ -15,7 +32,7 @@ v1.1.0
   + 左侧为正在输入的日志. "锁定" 可以保持当前信息提交时不改变
   + 右侧为搜索框, 可以根据模板搜索呼号或根据字典搜索模式 / 设备 / 天线 / 功率, 以及根据字典和天地图 API 搜索 QTH (若有 api-key), 点击地点会将信息填入相应栏
 
-## 使用说明
+## 快速上手
 
 1. 在可执行文件同级目录下创建 `tianditu-key.txt` , 填入天地图 api-key (若无 api-key , 将自动禁用天地图相关功能)
 2. 根据个人需要创建模板与字典
@@ -28,7 +45,27 @@ v1.1.0
 + 模式仅允许搜索提示区列出的模式
 + 频率输入格式为 `%f/%f` , 前后两个小数, 中间斜杠隔开, 代表发射频率与频差. 如 `430.610/+9.0` , `438.5/+0.0`, `439.645/-9.0`
 
-## 数据导出
+## 功能详情
+
+### 数据编辑
+
+#### 录入
+
++ 按照字段输入信息.
++ 呼号自动转大写, 并显示模板信息 (如有).
++ 对方设备 / 功率 / 天线 / 台址在获得焦点时显示输入历史 (如有), 输入框内容更新时显示字典补全 (如有).
++ 若有天地图 api-key , 台址输入框内容更新时还会额外显示天地图地点搜索建议.
++ 点击记录的位号重新编辑记录.
++ 所有日志变更将在文件重新被打开时生效.
+
+#### 删除
+
++ 点击 "删除" 会将一行数据标记为删除, 但不会立刻被清理.
++ 标记删除的数据不会影响当前的日志计数.
++ 再次点击位号并提交编辑可以取消删除操作.
++ 所有日志变更将在文件重新被打开时生效.
+
+### 数据导出
 
 当点击 "记录" 旁边的 "导出" 时, 您将打开一个新的页面. 您可以在这里导出您的记录.
 
@@ -79,9 +116,10 @@ v1.1.0
      14. 己方台址 - tqth
      15. 备注 - rmks
 
-## 模板数据说明
+### 模板数据说明
 
 + json格式, 须命名为 `tmpl.json` 且和可执行文件在同一目录下才可被加载
++ 可以使用自带的工具进行编辑
 
 示例
 
@@ -104,9 +142,10 @@ v1.1.0
 ]
 ```
 
-## 字典数据说明
+### 字典数据说明
 
 + json格式, 须命名为 `dict.json` 且和可执行文件在同一目录下才可被加载
++ 可以使用自带的工具进行编辑. 当为空的补全条目失去焦点时, 将被删除
 
 示例
 
