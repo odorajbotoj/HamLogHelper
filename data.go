@@ -10,7 +10,7 @@ const (
 )
 
 type LogLine struct {
-	Index    uint64 `json:"index"`
+	Index    int64  `json:"index"`
 	Callsign string `json:"callsign"`
 	Dt       string `json:"dt"`
 	Freq     string `json:"freq"`

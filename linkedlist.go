@@ -1,8 +1,7 @@
 package main
 
 type LinkedList struct {
-	maxPos uint64
-	head   *LinkedListNode
+	head *LinkedListNode
 }
 
 type LinkedListNode struct {
@@ -16,7 +15,10 @@ func newLinkedList() *LinkedList {
 	return p
 }
 
-func (ll *LinkedList) set(pos uint64, d *LogLine) {
+func (ll *LinkedList) set(pos int64, d *LogLine) {
+	if pos < 0 {
+		pos = -pos // mark deleted
+	}
 	current := ll.head
 	for range pos {
 		if current.next == nil {
@@ -25,23 +27,21 @@ func (ll *LinkedList) set(pos uint64, d *LogLine) {
 		current = current.next
 	}
 	current.data = *d
-	if pos > ll.maxPos {
-		ll.maxPos = pos
-	}
 }
 
-func (ll *LinkedList) dumpTill(pos uint64) []LogLine {
-	ret := make([]LogLine, pos)
+func (ll *LinkedList) cleanAndDump() []LogLine {
+	var ret []LogLine
 	current := ll.head
-	for i := range pos {
-		if current.next == nil {
-			current.next = new(LinkedListNode)
+	var reindex int64 = 0
+	for current.next != nil {
+		if current.next.data.Index <= 0 {
+			current.next = current.next.next // delete
+			continue
 		}
 		current = current.next
-		ret[i] = current.data
-	}
-	if pos > ll.maxPos {
-		ll.maxPos = pos
+		current.data.Index = reindex + 1
+		ret = append(ret, current.data)
+		reindex++
 	}
 	return ret
 }

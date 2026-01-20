@@ -30,7 +30,7 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 	log.Println("Client connected.")
 	defer conn.Close()
 	// log计数
-	var count uint64 = 0
+	var count int64 = 0
 	// 文件
 	var file *os.File
 	defer func() {
@@ -101,7 +101,7 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 						log.Printf("Failed to write to client. %v\n", err)
 						return
 					}
-					atomic.AddUint64(&count, 1)
+					atomic.AddInt64(&count, 1)
 				}
 				connStat = true
 			} else if inData.Type == JsonData {
@@ -111,7 +111,7 @@ func wsService(w http.ResponseWriter, r *http.Request) {
 				}
 				reMsg := "EDIT"
 				if inData.Payload.Index == 0 {
-					inData.Payload.Index = atomic.AddUint64(&count, 1)
+					inData.Payload.Index = atomic.AddInt64(&count, 1)
 					reMsg = "ADD"
 				}
 				// 序列化

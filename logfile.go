@@ -38,7 +38,7 @@ func parseLog(file *os.File) ([]LogLine, error) {
 		return nil, err
 	}
 	// 写回文件
-	lines := lst.dumpTill(lst.maxPos)
+	lines := lst.cleanAndDump()
 	for _, line := range lines {
 		bLine, err := json.Marshal(line)
 		if err != nil {

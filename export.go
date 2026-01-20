@@ -101,7 +101,7 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 	for _, line := range lines {
 		cl := []string{}
 		if selects[0] == '1' {
-			cl = append(cl, strconv.FormatUint(line.Index, 10))
+			cl = append(cl, strconv.FormatInt(line.Index, 10))
 		}
 		if selects[1] == '1' {
 			cl = append(cl, line.Callsign)
@@ -207,7 +207,7 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 	for i, line := range lines {
 		idx = 1
 		if selects[0] == '1' {
-			xlsx.SetCellUint("Sheet1", getCellIdx(int64(i+2), idx), line.Index)
+			xlsx.SetCellInt("Sheet1", getCellIdx(int64(i+2), idx), line.Index)
 			idx++
 		}
 		if selects[1] == '1' {
