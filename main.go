@@ -90,7 +90,7 @@ func main() {
 	http.HandleFunc("/editdb", editdbService)
 
 	// 启动服务
-	log.Println("Server listening on " + *setAddr + " ...")
+	log.Println("Server listening on http://" + *setAddr + "/ ...")
 	if err = http.ListenAndServe(*setAddr, nil); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}

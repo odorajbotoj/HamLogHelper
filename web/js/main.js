@@ -68,6 +68,7 @@ function editlog(idx) {
     document.getElementById("submit").value = `提交 #${idx}`;
 }
 
+// 标记删除条目
 function deletelog(idx) {
     let retjson = {
         "type": 3,
@@ -101,27 +102,42 @@ function deletelog(idx) {
     socket.send(JSON.stringify(retjson));
 }
 
+// 添加到模板
+function add2tmpl(idx) {
+    tmpljson.push({ "callsign": document.getElementById(`log_td_i${idx}_callsign`).innerText, "rig": document.getElementById(`log_td_i${idx}_rrig`).innerText, "pwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText, "ant": document.getElementById(`log_td_i${idx}_rant`).innerText, "qth": document.getElementById(`log_td_i${idx}_rqth`).innerText });
+    let d = new FormData();
+    d.append("type", "tmpl");
+    d.append("payload", JSON.stringify(tmpljson));
+    fetch(`http://${window.location.host}/editdb`, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+        },
+        body: `type=tmpl&payload=${encodeURIComponent(JSON.stringify(tmpljson))}`
+    })
+}
+
 // 窗口加载完成执行
 function onload() {
     // 获取记忆数据
-    let xhrtmpl = new XMLHttpRequest();
-    xhrtmpl.onreadystatechange = () => {
-        if (xhrtmpl.readyState == 4 && xhrtmpl.status == 200) {
-            tmpljson = JSON.parse(xhrtmpl.responseText);
+    fetch(`http://${window.location.host}/tmpl.json`)
+        .then((response) => {
+            if (response.ok) return response.json();
+            else return null;
+        })
+        .then((data) => {
+            tmpljson = data;
             document.getElementById("tmpldone").innerText = " | 模板已加载";
-        }
-    };
-    xhrtmpl.open("GET", `http://${window.location.host}/tmpl.json`, true);
-    xhrtmpl.send();
-    let xhrdict = new XMLHttpRequest();
-    xhrdict.onreadystatechange = () => {
-        if (xhrdict.readyState == 4 && xhrdict.status == 200) {
-            dictjson = JSON.parse(xhrdict.responseText);
+        });
+    fetch(`http://${window.location.host}/dict.json`)
+        .then((response) => {
+            if (response.ok) return response.json();
+            else return null;
+        })
+        .then((data) => {
+            dictjson = data;
             document.getElementById("dictdone").innerText = " | 字典已加载";
-        }
-    };
-    xhrdict.open("GET", `http://${window.location.host}/dict.json`, true);
-    xhrdict.send();
+        });
 
     // 天地图
     if (T) {
@@ -376,7 +392,7 @@ function onload() {
     socket.onmessage = (ev) => {
         let info = JSON.parse(String(ev.data));
         if (info.type == 2 && info.message == "OK") {
-            document.getElementById("connected").innerText = " | 服务已连接";
+            document.getElementById("connected").innerText = ` | 已打开 ${logname}.hjl`;
         } else if (info.type == 3) {
             let markdel = false;
             // 更新提交提示
@@ -384,7 +400,7 @@ function onload() {
             document.getElementById("submit").value = `提交 #${nextlog}`;
             // 记录表格
             let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
-            let inner = `<td><input type="button" value="删除" onclick="deletelog(${info.payload.index})"></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
+            let inner = `<td><input type="button" value="标记为删除" onclick="deletelog(${info.payload.index})"><input type="button" value="添加到模板" onclick="add2tmpl(${info.payload.index})"></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
             for (let i = 0; i < keys.length; i++) {
                 inner += `<td id="log_td_i${info.payload.index}_${keys[i]}">${info.payload[keys[i]]}</td>`;
             }

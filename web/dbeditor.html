@@ -10,25 +10,29 @@
         var tmpljson, dictjson;
 
         // 获取数据
-        let xhrtmpl = new XMLHttpRequest();
-        xhrtmpl.onreadystatechange = () => {
-            if (xhrtmpl.readyState == 4 && xhrtmpl.status == 200) {
-                tmpljson = JSON.parse(xhrtmpl.responseText);
-                // 生成表格 tmpl
-                let tmpltb = document.getElementById("tmpltable");
-                for (let i in tmpljson) {
-                    let tr = document.createElement("tr");
-                    tr.innerHTML = `<td><input type="button" value="删除" onclick="this.parentNode.parentNode.remove();"><input type="button" value="上移" onclick="if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);"><input type="button" value="下移" onclick="if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);"></td><td><input type="text" class="tmpl_callsign" value="${tmpljson[i].callsign}"></td><td><input type="text" class="tmpl_rig" value="${tmpljson[i].rig}"></td><td><input type="text" class="tmpl_pwr" value="${tmpljson[i].pwr}"></td><td><input type="text" class="tmpl_ant" value="${tmpljson[i].ant}"></td><td><input type="text" class="tmpl_qth" value="${tmpljson[i].qth}"></td>`;
-                    tmpltb.appendChild(tr);
+        fetch(`http://${window.location.host}/tmpl.json`)
+            .then((response) => {
+                if (response.ok) return response.json();
+                else return null;
+            })
+            .then((data) => {
+                if (data) {
+                    tmpljson = data;
+                    let tmpltb = document.getElementById("tmpltable");
+                    for (let i in tmpljson) {
+                        let tr = document.createElement("tr");
+                        tr.innerHTML = `<td><input type="button" value="删除" onclick="this.parentNode.parentNode.remove();"><input type="button" value="上移" onclick="if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);"><input type="button" value="下移" onclick="if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);"></td><td><input type="text" class="tmpl_callsign" value="${tmpljson[i].callsign}"></td><td><input type="text" class="tmpl_rig" value="${tmpljson[i].rig}"></td><td><input type="text" class="tmpl_pwr" value="${tmpljson[i].pwr}"></td><td><input type="text" class="tmpl_ant" value="${tmpljson[i].ant}"></td><td><input type="text" class="tmpl_qth" value="${tmpljson[i].qth}"></td>`;
+                        tmpltb.appendChild(tr);
+                    }
                 }
-            }
-        };
-        xhrtmpl.open("GET", `http://${window.location.host}/tmpl.json`, true);
-        xhrtmpl.send();
-        let xhrdict = new XMLHttpRequest();
-        xhrdict.onreadystatechange = () => {
-            if (xhrdict.readyState == 4 && xhrdict.status == 200) {
-                dictjson = JSON.parse(xhrdict.responseText);
+            });
+        fetch(`http://${window.location.host}/dict.json`)
+            .then((response) => {
+                if (response.ok) return response.json();
+                else return null;
+            })
+            .then((data) => {
+                dictjson = data;
                 // 生成表格 dict
                 let dicttb_rig = document.getElementById("dicttable_rig");
                 for (let i of Object.keys(dictjson.rig)) {
@@ -70,10 +74,7 @@
                     tr.innerHTML = inh + "</td>";
                     dicttb_qth.appendChild(tr);
                 }
-            }
-        };
-        xhrdict.open("GET", `http://${window.location.host}/dict.json`, true);
-        xhrdict.send();
+            });
 
         function onload() {
             // 监听提交
