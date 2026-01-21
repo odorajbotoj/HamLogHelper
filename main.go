@@ -9,6 +9,7 @@ package main
 
 import (
 	"embed"
+	"flag"
 	"html/template"
 	"io"
 	"io/fs"
@@ -25,12 +26,15 @@ var embedFiles embed.FS
 
 var indexTmpl, exportTmpl *template.Template
 
+var setAddr = flag.String("a", ":5973", "server bind addr")
+
 // tmpl & dict
 var tmplJson []byte
 var dictJson []byte
 
 func main() {
 	log.Printf("\nHamLogHelper 业余无线电通联记录助手\nby odorajbotoj (BG4QBF)\nVERSION: %s", VERSION)
+	flag.Parse()
 
 	// 读取天地图api-key
 	tdtKeyBytes, _ := os.ReadFile("tianditu-key.txt")
@@ -86,8 +90,8 @@ func main() {
 	http.HandleFunc("/editdb", editdbService)
 
 	// 启动服务
-	log.Println("Server listening on local port 5973 ...")
-	if err = http.ListenAndServe("localhost:5973", nil); err != nil {
+	log.Println("Server listening on " + *setAddr + " ...")
+	if err = http.ListenAndServe(*setAddr, nil); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
