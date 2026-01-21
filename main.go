@@ -19,14 +19,14 @@ import (
 	"strings"
 )
 
-const VERSION string = "v1.2.0"
+const VERSION string = "v1.2.1"
 
 //go:embed web/*
 var embedFiles embed.FS
 
 var indexTmpl, exportTmpl *template.Template
 
-var setAddr = flag.String("a", ":5973", "server bind addr")
+var setAddr = flag.String("a", "127.0.0.1:5973", "server bind addr")
 
 // tmpl & dict
 var tmplJson []byte
