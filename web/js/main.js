@@ -11,10 +11,7 @@ var re = new RegExp("^(([1-9]\\d*)|0)\\.\\d+/[+-](([1-9]\\d*)|0)\\.\\d+$");
 var nextlog = 1;
 var marks = {};
 
-var dynamicRig = new Set();
-var dynamicPwr = new Set();
-var dynamicAnt = new Set();
-var dynamicQth = new Set();
+var dynamics = { "rrig": new Set(), "rpwr": new Set(), "rant": new Set(), "rqth": new Set() };
 
 const ALLOWED_MODES = [
     "AM", "ARDOP", "ATV", "CHIP", "CLO", "CONTESTI", "CW", "DIGITALVOICE", "DOMINO", "DYNAMIC", "FAX",
@@ -123,6 +120,47 @@ function add2tmpl(idx) {
     }
 }
 
+function autocomplete_cb(name, str) {
+    return () => {
+        let rst = [];
+        let rstkeys = Object.keys(dictjson[name]).filter((item) => { return item.includes(document.getElementById("r" + name).value.toLowerCase()); });
+        for (let i of rstkeys) {
+            rst = rst.concat(dictjson[name][i]);
+        }
+        if (rst) {
+            let suggests_ol = document.getElementById("suggests");
+            suggests_ol.innerHTML = "";
+            document.getElementById("mapsuggests").innerHTML = "";
+            for (let i of rst) {
+                suggests_ol.insertAdjacentHTML("beforeend", `<li>[${str}]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('r${name}').value='${i}';document.getElementById('r${name}').focus();">${i}</a></li>`);
+            }
+        }
+    };
+}
+
+function dynamichistory_cb(name) {
+    return () => {
+        document.getElementById("suggests").innerHTML = "";
+        let dynamics_ol = document.getElementById("dynamics");
+        dynamics_ol.innerHTML = "";
+        for (const item of dynamics[name]) {
+            dynamics_ol.insertAdjacentHTML("beforeend", `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('${name}').value='${item}';document.getElementById('${name}').focus();">${item}</a></li>`);
+        }
+    };
+}
+
+function quickin_cb(name) {
+    return (event) => {
+        if ((event.ctrlKey || event.metaKey) && ['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(event.key)) {
+            event.preventDefault();
+            let idx = parseInt(event.key) - 1;
+            let suggests = document.getElementById("suggests");
+            if (suggests.childElementCount == 0) suggests = document.getElementById("dynamics");
+            if (idx < suggests.childElementCount) document.getElementById(name).value = suggests.children[idx].children[0].innerText;
+        }
+    };
+}
+
 // 窗口加载完成执行
 function onload() {
     // 获取记忆数据
@@ -207,109 +245,29 @@ function onload() {
         let rst = tmpljson.filter((item) => { return item.callsign.includes(ele.value); });
         let suggests_ol = document.getElementById("suggests");
         suggests_ol.innerHTML = "";
-        document.getElementById("mapsuggests").innerHTML = "";
         document.getElementById("dynamics").innerHTML = "";
+        document.getElementById("mapsuggests").innerHTML = "";
         for (let i of rst) {
             suggests_ol.insertAdjacentHTML("beforeend", `<li>[模板]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('callsign').value='${i.callsign}';document.getElementById('rrig').value='${i.rig}';document.getElementById('rpwr').value='${i.pwr}';document.getElementById('rant').value='${i.ant}';document.getElementById('rqth').value='${i.qth}';document.getElementById('callsign').focus();">${i.callsign}</a><i>${i.rig}|${i.pwr}|${i.ant}|${i.qth}</i></li>`);
         }
     });
-    // 设备 - 字典
-    document.getElementById("rrig").addEventListener("input", () => {
-        let rst = [];
-        let rstkeys = Object.keys(dictjson.rig).filter((item) => { return item.includes(document.getElementById("rrig").value.toLowerCase()); });
-        for (let i of rstkeys) {
-            rst = rst.concat(dictjson.rig[i]);
-        }
-        if (rst) {
-            let suggests_ol = document.getElementById("suggests");
-            suggests_ol.innerHTML = "";
-            document.getElementById("mapsuggests").innerHTML = "";
-            for (let i of rst) {
-                suggests_ol.insertAdjacentHTML("beforeend", `<li>[设备]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rrig').value='${i}';document.getElementById('rrig').focus();">${i}</a></li>`);
-            }
-        }
-    });
-    // 功率 - 字典
-    document.getElementById("rpwr").addEventListener("input", () => {
-        let rst = [];
-        let rstkeys = Object.keys(dictjson.pwr).filter((item) => { return item.includes(document.getElementById("rpwr").value.toLowerCase()); });
-        for (let i of rstkeys) {
-            rst = rst.concat(dictjson.pwr[i]);
-        }
-        if (rst) {
-            let suggests_ol = document.getElementById("suggests");
-            suggests_ol.innerHTML = "";
-            document.getElementById("mapsuggests").innerHTML = "";
-            for (let i of rst) {
-                suggests_ol.insertAdjacentHTML("beforeend", `<li>[功率]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rpwr').value='${i}';document.getElementById('rpwr').focus();">${i}</a></li>`);
-            }
-        }
-    });
-    // 天线 - 字典
-    document.getElementById("rant").addEventListener("input", () => {
-        let rst = [];
-        let rstkeys = Object.keys(dictjson.ant).filter((item) => { return item.includes(document.getElementById("rant").value.toLowerCase()); });
-        for (let i of rstkeys) {
-            rst = rst.concat(dictjson.ant[i]);
-        }
-        if (rst) {
-            let suggests_ol = document.getElementById("suggests");
-            suggests_ol.innerHTML = "";
-            document.getElementById("mapsuggests").innerHTML = "";
-            for (let i of rst) {
-                suggests_ol.insertAdjacentHTML("beforeend", `<li>[天线]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rant').value='${i}';document.getElementById('rant').focus();">${i}</a></li>`);
-            }
-        }
-    });
-    // QTH - 字典
-    document.getElementById("rqth").addEventListener("input", () => {
-        let rst = [];
-        let rstkeys = Object.keys(dictjson.qth).filter((item) => { return item.includes(document.getElementById("rqth").value.toLowerCase()); });
-        for (let i of rstkeys) {
-            rst = rst.concat(dictjson.qth[i]);
-        }
-        if (rst) {
-            let suggests_ol = document.getElementById("suggests");
-            suggests_ol.innerHTML = "";
-            for (let i of rst) {
-                suggests_ol.insertAdjacentHTML("beforeend", `<li>[QTH]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rqth').value='${i}';document.getElementById('rqth').focus();">${i}</a></li>`);
-            }
-        }
-    });
+    // 字典自动补全
+    document.getElementById("rrig").addEventListener("input", autocomplete_cb("rig", "设备"));
+    document.getElementById("rpwr").addEventListener("input", autocomplete_cb("pwr", "功率"));
+    document.getElementById("rant").addEventListener("input", autocomplete_cb("ant", "天线"));
+    document.getElementById("rqth").addEventListener("input", autocomplete_cb("qth", "QTH"));
 
     // 自动历史输入
-    document.getElementById("rrig").addEventListener("focus", () => {
-        document.getElementById("suggests").innerHTML = "";
-        let dynamics_ol = document.getElementById("dynamics");
-        dynamics_ol.innerHTML = "";
-        for (const item of dynamicRig) {
-            dynamics_ol.insertAdjacentHTML("beforeend", `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rrig').value='${item}';document.getElementById('rrig').focus();">${item}</a></li>`);
-        }
-    });
-    document.getElementById("rpwr").addEventListener("focus", () => {
-        document.getElementById("suggests").innerHTML = "";
-        let dynamics_ol = document.getElementById("dynamics");
-        dynamics_ol.innerHTML = "";
-        for (const item of dynamicPwr) {
-            dynamics_ol.insertAdjacentHTML("beforeend", `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rpwr').value='${item}';document.getElementById('rpwr').focus();">${item}</a></li>`);
-        }
-    });
-    document.getElementById("rant").addEventListener("focus", () => {
-        document.getElementById("suggests").innerHTML = "";
-        let dynamics_ol = document.getElementById("dynamics");
-        dynamics_ol.innerHTML = "";
-        for (const item of dynamicAnt) {
-            dynamics_ol.insertAdjacentHTML("beforeend", `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rant').value='${item}';document.getElementById('rant').focus();">${item}</a></li>`);
-        }
-    });
-    document.getElementById("rqth").addEventListener("focus", () => {
-        document.getElementById("suggests").innerHTML = "";
-        let dynamics_ol = document.getElementById("dynamics");
-        dynamics_ol.innerHTML = "";
-        for (const item of dynamicQth) {
-            dynamics_ol.insertAdjacentHTML("beforeend", `<li>[动态]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('rqth').value='${item}';document.getElementById('rqth').focus();">${item}</a></li>`);
-        }
-    });
+    document.getElementById("rrig").addEventListener("focus", dynamichistory_cb("rrig"));
+    document.getElementById("rpwr").addEventListener("focus", dynamichistory_cb("rpwr"));
+    document.getElementById("rant").addEventListener("focus", dynamichistory_cb("rant"));
+    document.getElementById("rqth").addEventListener("focus", dynamichistory_cb("rqth"));
+
+    // 输入选择快捷键
+    document.getElementById("rrig").addEventListener("keydown", quickin_cb("rrig"));
+    document.getElementById("rpwr").addEventListener("keydown", quickin_cb("rpwr"));
+    document.getElementById("rant").addEventListener("keydown", quickin_cb("rant"));
+    document.getElementById("rqth").addEventListener("keydown", quickin_cb("rqth"));
 
     // 检查复选框状态
     document.getElementById("dt").disabled = document.getElementById("dtauto").checked;
@@ -354,10 +312,10 @@ function onload() {
             alert("无法解析的频率");
             return;
         }
-        dynamicRig.add(document.getElementById("rrig").value);
-        dynamicPwr.add(document.getElementById("rpwr").value);
-        dynamicAnt.add(document.getElementById("rant").value);
-        dynamicQth.add(document.getElementById("rqth").value);
+        dynamics["rrig"].add(document.getElementById("rrig").value);
+        dynamics["rpwr"].add(document.getElementById("rpwr").value);
+        dynamics["rant"].add(document.getElementById("rant").value);
+        dynamics["rqth"].add(document.getElementById("rqth").value);
         socket.send(JSON.stringify(retjson));
         clear_input();
         document.getElementById("callsign").focus();
