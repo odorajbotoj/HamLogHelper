@@ -19,9 +19,9 @@
                 if (data) {
                     tmpljson = data;
                     let tmpltb = document.getElementById("tmpltable");
-                    for (let i in tmpljson) {
+                    for (let i of tmpljson) {
                         let tr = document.createElement("tr");
-                        tr.innerHTML = `<td><input type="button" value="删除" onclick="this.parentNode.parentNode.remove();"><input type="button" value="上移" onclick="if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);"><input type="button" value="下移" onclick="if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);"></td><td><input type="text" class="tmpl_callsign" value="${tmpljson[i].callsign}"></td><td><input type="text" class="tmpl_rig" value="${tmpljson[i].rig}"></td><td><input type="text" class="tmpl_pwr" value="${tmpljson[i].pwr}"></td><td><input type="text" class="tmpl_ant" value="${tmpljson[i].ant}"></td><td><input type="text" class="tmpl_qth" value="${tmpljson[i].qth}"></td>`;
+                        tr.innerHTML = `<td><input type="button" value="删除" onclick="this.parentNode.parentNode.remove();"><input type="button" value="上移" onclick="if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);"><input type="button" value="下移" onclick="if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);"></td><td><input type="text" class="tmpl_callsign" value="${i.callsign}"></td><td><input type="text" class="tmpl_rig" value="${i.rig}"></td><td><input type="text" class="tmpl_pwr" value="${i.pwr}"></td><td><input type="text" class="tmpl_ant" value="${i.ant}"></td><td><input type="text" class="tmpl_qth" value="${i.qth}"></td>`;
                         tmpltb.appendChild(tr);
                     }
                 }
@@ -88,6 +88,7 @@
                         let ant = ele.querySelector(".tmpl_ant").value;
                         let qth = ele.querySelector(".tmpl_qth").value;
                         if (!callsign || !rig || !pwr || !ant || !qth) continue;
+                        if (j.some(item => item.callsign == callsign && item.rig == rig && item.pwr == pwr && item.ant == ant && item.qth == qth)) continue;
                         j.push({ "callsign": callsign, "rig": rig, "pwr": pwr, "ant": ant, "qth": qth });
                     }
                     document.getElementById("tmplpayload").value = JSON.stringify(j);
@@ -100,38 +101,38 @@
                     let j = { "rig": {}, "pwr": {}, "ant": {}, "qth": {} };
                     for (let ele of document.getElementById("dicttable_rig").children) {
                         let k = ele.querySelector(".dict_key").value;
-                        j.rig[k] = new Array();
                         if (!k) continue;
+                        if (!(j.rig[k])) j.rig[k] = new Array();
                         for (let inputs of ele.querySelector(".dict_values").children) {
                             let v = inputs.querySelector(".dict_td_input").value;
-                            if (v) j.rig[k].push(v);
+                            if (v && !j.rig[k].includes(v)) j.rig[k].push(v);
                         }
                     }
                     for (let ele of document.getElementById("dicttable_pwr").children) {
                         let k = ele.querySelector(".dict_key").value;
-                        j.pwr[k] = new Array();
                         if (!k) continue;
+                        if (!(j.pwr[k])) j.pwr[k] = new Array();
                         for (let inputs of ele.querySelector(".dict_values").children) {
                             let v = inputs.querySelector(".dict_td_input").value;
-                            if (v) j.pwr[k].push(v);
+                            if (v && !j.pwr[k].includes(v)) j.pwr[k].push(v);
                         }
                     }
                     for (let ele of document.getElementById("dicttable_ant").children) {
                         let k = ele.querySelector(".dict_key").value;
-                        j.ant[k] = new Array();
                         if (!k) continue;
+                        if (!(j.ant[k])) j.ant[k] = new Array();
                         for (let inputs of ele.querySelector(".dict_values").children) {
                             let v = inputs.querySelector(".dict_td_input").value;
-                            if (v) j.ant[k].push(v);
+                            if (v && !j.ant[k].includes(v)) j.ant[k].push(v);
                         }
                     }
                     for (let ele of document.getElementById("dicttable_qth").children) {
                         let k = ele.querySelector(".dict_key").value;
-                        j.qth[k] = new Array();
                         if (!k) continue;
+                        if (!(j.qth[k])) j.qth[k] = new Array();
                         for (let inputs of ele.querySelector(".dict_values").children) {
                             let v = inputs.querySelector(".dict_td_input").value;
-                            if (v) j.qth[k].push(v);
+                            if (v && !j.qth[k].includes(v)) j.qth[k].push(v);
                         }
                     }
                     document.getElementById("dictpayload").value = JSON.stringify(j);
