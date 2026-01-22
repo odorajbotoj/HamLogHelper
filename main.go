@@ -19,7 +19,7 @@ import (
 	"strings"
 )
 
-const VERSION string = "v1.2.1"
+const VERSION string = "v1.3.0"
 
 //go:embed web/*
 var embedFiles embed.FS
