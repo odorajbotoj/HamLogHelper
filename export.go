@@ -69,7 +69,11 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	selects := r.URL.Query().Get("s")
-	if selects == "" || len(selects) != 15 {
+	if selects == "" {
+		http.Error(w, "您未选择任何列\nYou didn't select any column.", http.StatusBadRequest)
+		return
+	}
+	if len(selects) > 15 {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
@@ -92,67 +96,56 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/csv")
 	cw := csv.NewWriter(w)
 	head := []string{}
-	for i, f := range fields {
-		if selects[i] == '1' {
-			head = append(head, f)
+	for _, s := range selects {
+		if s-'a' < 15 {
+			head = append(head, fields[s-'a'])
 		}
 	}
 	cw.Write(head)
 	for _, line := range lines {
 		cl := []string{}
-		if selects[0] == '1' {
-			cl = append(cl, strconv.FormatInt(line.Index, 10))
-		}
-		if selects[1] == '1' {
-			cl = append(cl, line.Callsign)
-		}
-		if selects[2] == '1' {
-			if bjthhmm == "1" {
-				t, err := time.Parse("2006-01-02T15:04", line.Dt)
-				if err == nil {
-					cl = append(cl, t.Add(8*time.Hour).Format("15:04"))
+		for _, s := range selects {
+			switch s - 'a' {
+			case 0:
+				cl = append(cl, strconv.FormatInt(line.Index, 10))
+			case 1:
+				cl = append(cl, line.Callsign)
+			case 2:
+				if bjthhmm == "1" {
+					t, err := time.Parse("2006-01-02T15:04", line.Dt)
+					if err == nil {
+						cl = append(cl, t.Add(8*time.Hour).Format("15:04"))
+					} else {
+						cl = append(cl, err.Error())
+					}
 				} else {
-					cl = append(cl, err.Error())
+					cl = append(cl, line.Dt)
 				}
-			} else {
-				cl = append(cl, line.Dt)
+			case 3:
+				cl = append(cl, line.Freq)
+			case 4:
+				cl = append(cl, line.Mode)
+			case 5:
+				cl = append(cl, strconv.Itoa(line.Rst))
+			case 6:
+				cl = append(cl, line.RRig)
+			case 7:
+				cl = append(cl, line.RPwr)
+			case 8:
+				cl = append(cl, line.RAnt)
+			case 9:
+				cl = append(cl, line.RQth)
+			case 10:
+				cl = append(cl, line.TRig)
+			case 11:
+				cl = append(cl, line.TPwr)
+			case 12:
+				cl = append(cl, line.TAnt)
+			case 13:
+				cl = append(cl, line.TQth)
+			case 14:
+				cl = append(cl, line.Rmks)
 			}
-		}
-		if selects[3] == '1' {
-			cl = append(cl, line.Freq)
-		}
-		if selects[4] == '1' {
-			cl = append(cl, line.Mode)
-		}
-		if selects[5] == '1' {
-			cl = append(cl, strconv.Itoa(line.Rst))
-		}
-		if selects[6] == '1' {
-			cl = append(cl, line.RRig)
-		}
-		if selects[7] == '1' {
-			cl = append(cl, line.RPwr)
-		}
-		if selects[8] == '1' {
-			cl = append(cl, line.RAnt)
-		}
-		if selects[9] == '1' {
-			cl = append(cl, line.RQth)
-		}
-		if selects[10] == '1' {
-			cl = append(cl, line.TRig)
-		}
-		if selects[11] == '1' {
-			cl = append(cl, line.TPwr)
-		}
-		if selects[12] == '1' {
-			cl = append(cl, line.TAnt)
-		}
-		if selects[13] == '1' {
-			cl = append(cl, line.TQth)
-		}
-		if selects[14] == '1' {
-			cl = append(cl, line.Rmks)
 		}
 		cw.Write(cl)
 	}
@@ -170,7 +163,11 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	selects := r.URL.Query().Get("s")
-	if selects == "" || len(selects) != 15 {
+	if selects == "" {
+		http.Error(w, "您未选择任何列\nYou didn't select any column.", http.StatusBadRequest)
+		return
+	}
+	if len(selects) > 15 {
 		http.Error(w, "Bad args.", http.StatusBadRequest)
 		return
 	}
@@ -198,82 +195,71 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 	var idx int64 = 1
-	for i, f := range fields {
-		if selects[i] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(1, idx), f)
+	for _, s := range selects {
+		if s-'a' < 15 {
+			xlsx.SetCellStr("Sheet1", getCellIdx(1, idx), fields[s-'a'])
 			idx++
 		}
 	}
 	for i, line := range lines {
 		idx = 1
-		if selects[0] == '1' {
-			xlsx.SetCellInt("Sheet1", getCellIdx(int64(i+2), idx), line.Index)
-			idx++
-		}
-		if selects[1] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Callsign)
-			idx++
-		}
-		if selects[2] == '1' {
-			if bjthhmm == "1" {
-				t, err := time.Parse("2006-01-02T15:04", line.Dt)
-				if err == nil {
-					xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), t.Add(8*time.Hour).Format("15:04"))
+		for _, s := range selects {
+			switch s - 'a' {
+			case 0:
+				xlsx.SetCellInt("Sheet1", getCellIdx(int64(i+2), idx), line.Index)
+				idx++
+			case 1:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Callsign)
+				idx++
+			case 2:
+				if bjthhmm == "1" {
+					t, err := time.Parse("2006-01-02T15:04", line.Dt)
+					if err == nil {
+						xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), t.Add(8*time.Hour).Format("15:04"))
+					} else {
+						xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), err.Error())
+					}
 				} else {
-					xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), err.Error())
+					xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Dt)
 				}
-			} else {
-				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Dt)
+				idx++
+			case 3:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Freq)
+				idx++
+			case 4:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Mode)
+				idx++
+			case 5:
+				xlsx.SetCellInt("Sheet1", getCellIdx(int64(i+2), idx), int64(line.Rst))
+				idx++
+			case 6:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RRig)
+				idx++
+			case 7:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RPwr)
+				idx++
+			case 8:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RAnt)
+				idx++
+			case 9:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RQth)
+				idx++
+			case 10:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TRig)
+				idx++
+			case 11:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TPwr)
+				idx++
+			case 12:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TAnt)
+				idx++
+			case 13:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TQth)
+				idx++
+			case 14:
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Rmks)
+				idx++
 			}
-			idx++
-		}
-		if selects[3] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Freq)
-			idx++
-		}
-		if selects[4] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Mode)
-			idx++
-		}
-		if selects[5] == '1' {
-			xlsx.SetCellInt("Sheet1", getCellIdx(int64(i+2), idx), int64(line.Rst))
-			idx++
-		}
-		if selects[6] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RRig)
-			idx++
-		}
-		if selects[7] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RPwr)
-			idx++
-		}
-		if selects[8] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RAnt)
-			idx++
-		}
-		if selects[9] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RQth)
-			idx++
-		}
-		if selects[10] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TRig)
-			idx++
-		}
-		if selects[11] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TPwr)
-			idx++
-		}
-		if selects[12] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TAnt)
-			idx++
-		}
-		if selects[13] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TQth)
-			idx++
-		}
-		if selects[14] == '1' {
-			xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Rmks)
-			idx++
 		}
 	}
 	if err := xlsx.Write(w); err != nil {
