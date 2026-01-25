@@ -40,7 +40,6 @@
         <table border="1">
             <thead>
                 <tr>
-                    <td>选择</td>
                     <td><input type="checkbox" class="sel" id="sel_index" checked>位号</td>
                     <td><input type="checkbox" class="sel" id="sel_callsign" checked>呼号</td>
                     <td><input type="checkbox" class="sel" id="sel_dt" checked>日期时间</td>
@@ -61,7 +60,6 @@
             <tbody>
                 {{ range .Data }}
                 <tr>
-                    <td></td>
                     <td>{{ .Index }}</td>
                     <td>{{ .Callsign }}</td>
                     <td>{{ .Dt }}</td>
