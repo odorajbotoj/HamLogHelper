@@ -4,7 +4,7 @@ HamLogHelper
 
 by BG4QBF
 
-v1.3.0
+v1.4.0
 
 ## 使用视频
 

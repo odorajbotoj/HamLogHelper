@@ -7,7 +7,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <title>业余无线电通联记录助手 - BG4QBF</title>
     <link rel="stylesheet" href="css/index.css" />
-    {{ with . }}
+    {{ with .Key }}
     <script src="http://api.tianditu.gov.cn/api?v=4.0&tk={{ . }}" type="text/javascript"></script>
     <style>
         #logdiv {
@@ -40,7 +40,7 @@
     </header>
     <div id="mainpage">
         <div class="field" id="logdiv">
-            <p class="fieldtitle"> 记录<a href="#" id="exportlink">导出</a><span id="connected"></span></p>
+            <p class="fieldtitle">记录 <a href="#" id="exportlink">导出</a><span id="connected"></span></p>
             <div id="logs">
                 <table border="1">
                     <thead>
@@ -67,7 +67,7 @@
                 </table>
             </div>
         </div>
-        {{ with . }}
+        {{ with .Key }}
         <div class="field" id="mapdiv">
         </div>
         {{ end }}
@@ -166,7 +166,13 @@
         </div>
     </div>
     <footer>
-        by odorajbotoj (BG4QBF) | MIT License | Copyright (c) 2025-2026 薛子豪 | v1.3.0
+        <span>by odorajbotoj (BG4QBF) | MIT License | Copyright (c) 2025-2026 薛子豪 |</span>
+        &nbsp;
+        {{ with .Version }}
+        <span id="version">{{ . }}</span>
+        {{ else }}
+        <span id="version">ver. u.n.k</span>
+        {{ end }}
     </footer>
 </body>
 

@@ -9,6 +9,7 @@ package main
 
 import (
 	"embed"
+	"encoding/json"
 	"flag"
 	"html/template"
 	"io"
@@ -19,7 +20,7 @@ import (
 	"strings"
 )
 
-const VERSION string = "v1.3.0"
+const VERSION string = "v1.4.0"
 
 //go:embed web/*
 var embedFiles embed.FS
@@ -59,7 +60,7 @@ func main() {
 	// 创建服务
 	indexTmpl = template.Must(template.ParseFS(filesys, "index.html"))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := indexTmpl.Execute(w, tdtKey); err != nil {
+		if err := indexTmpl.Execute(w, struct{ Key, Version string }{tdtKey, VERSION}); err != nil {
 			http.Error(w, "Template error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -88,6 +89,27 @@ func main() {
 	// 编辑数据库
 	http.Handle("/dbeditor.html", fileServer)
 	http.HandleFunc("/editdb", editdbService)
+
+	go func() {
+		resp, err := http.Get("https://api.github.com/repos/odorajbotoj/HamLogHelper/releases/latest")
+		if err != nil {
+			log.Printf("Update Checker: ERROR - %v\n", err)
+			return
+		}
+		defer resp.Body.Close()
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Printf("Update Checker: ERROR - %v\n", err)
+			return
+		}
+		newVer := struct {
+			TagName string `json:"tag_name"`
+		}{}
+		json.Unmarshal(b, &newVer)
+		if newVer.TagName > VERSION {
+			log.Printf("Update Checker: New version - %s\nhttps://github.com/odorajbotoj/HamLogHelper/releases/latest", newVer.TagName)
+		}
+	}()
 
 	// 启动服务
 	log.Println("Server listening on " + *setAddr + " ...")
