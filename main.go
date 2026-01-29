@@ -15,9 +15,13 @@ import (
 	"io"
 	"io/fs"
 	"log"
+	"net"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
+	"time"
 )
 
 const VERSION string = "v1.4.0"
@@ -27,14 +31,15 @@ var embedFiles embed.FS
 
 var indexTmpl, exportTmpl *template.Template
 
-var setAddr = flag.String("a", "127.0.0.1:5973", "server bind addr")
+var setAddr = flag.String("a", "127.0.0.1:5973", "Server bind addr 服务绑定地址端口")
+var silent = flag.Bool("s", false, "Silent start 启动时不自动打开浏览器")
 
 // tmpl & dict
 var tmplJson []byte
 var dictJson []byte
 
 func main() {
-	log.Printf("\nHamLogHelper 业余无线电通联记录助手\nby odorajbotoj (BG4QBF)\nVERSION: %s", VERSION)
+	log.Printf("\nHamLogHelper 业余无线电台网点名记录助手\nAuthor 作者: odorajbotoj (BG4QBF)\nVersion 版本: %s", VERSION)
 	flag.Parse()
 
 	// 读取天地图api-key
@@ -93,13 +98,13 @@ func main() {
 	go func() {
 		resp, err := http.Get("https://api.github.com/repos/odorajbotoj/HamLogHelper/releases/latest")
 		if err != nil {
-			log.Printf("Update Checker: ERROR - %v\n", err)
+			log.Printf("Update Checker 检查更新: ERROR - %v\n", err)
 			return
 		}
 		defer resp.Body.Close()
 		b, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Printf("Update Checker: ERROR - %v\n", err)
+			log.Printf("Update Checker 检查更新: ERROR - %v\n", err)
 			return
 		}
 		newVer := struct {
@@ -107,13 +112,36 @@ func main() {
 		}{}
 		json.Unmarshal(b, &newVer)
 		if newVer.TagName > VERSION {
-			log.Printf("Update Checker: New version - %s\nhttps://github.com/odorajbotoj/HamLogHelper/releases/latest", newVer.TagName)
+			log.Printf("Update Checker 检查更新: New version 新版本 - %s\nhttps://github.com/odorajbotoj/HamLogHelper/releases/latest", newVer.TagName)
 		}
 	}()
 
 	// 启动服务
-	log.Println("Server listening on " + *setAddr + " ...")
-	if err = http.ListenAndServe(*setAddr, nil); err != nil {
-		log.Fatalf("Server failed: %v", err)
+	listener, err := net.Listen("tcp", *setAddr)
+	if err != nil {
+		log.Fatalf("Listen Failed 服务器监听失败: %v", err)
+	}
+	defer listener.Close()
+	bindAddr := listener.Addr().String()
+	log.Printf("Server Starting 服务启动 ...\nURL 浏览器访问 http://%s 打开界面", bindAddr)
+
+	if !*silent {
+		go func() {
+			time.Sleep(1 * time.Second) // delay and wait server starting
+			switch runtime.GOOS {
+			case "windows":
+				exec.Command("cmd", "/c", "start", "http://"+bindAddr).Start()
+			case "linux":
+				exec.Command("xdg-open", "http://"+bindAddr).Start()
+			case "darwin":
+				exec.Command("open", "http://"+bindAddr).Start()
+			default:
+				log.Println("Browser Opener Error 无法自动打开浏览器")
+			}
+		}()
+	}
+
+	if err = http.Serve(listener, nil); err != nil {
+		log.Fatalf("Server Failed 服务器运行失败: %v", err)
 	}
 }
