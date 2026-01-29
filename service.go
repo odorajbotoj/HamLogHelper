@@ -188,7 +188,8 @@ func editdbService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := r.Form.Get("type")
-	if t == "tmpl" {
+	switch t {
+	case "tmpl":
 		data := []byte(r.Form.Get("payload"))
 		if !json.Valid(data) {
 			http.Error(w, "Invalid Data.", http.StatusBadRequest)
@@ -196,7 +197,7 @@ func editdbService(w http.ResponseWriter, r *http.Request) {
 		}
 		os.WriteFile("tmpl.json", data, 0644)
 		tmplJson = data
-	} else if t == "dict" {
+	case "dict":
 		data := []byte(r.Form.Get("payload"))
 		if !json.Valid(data) {
 			http.Error(w, "Invalid Data.", http.StatusBadRequest)
@@ -204,7 +205,7 @@ func editdbService(w http.ResponseWriter, r *http.Request) {
 		}
 		os.WriteFile("dict.json", data, 0644)
 		dictJson = data
-	} else {
+	default:
 		http.Error(w, "Bad Data Type.", http.StatusBadRequest)
 		return
 	}
