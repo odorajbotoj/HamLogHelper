@@ -71,7 +71,7 @@ v1.4.0
 
 若勾选 "仅保存北京时间hh:mm", 则时间将不会保留 UTC 的 `yyyy-mm-ddThh:mm`, 而是仅保留北京时间的小时和分钟 `hh:mm`.
 
-您需要勾选想要导出的列. 导出 CSV 或 XLSX 时, 列的顺序由您勾选的顺序决定 (页面中会有 `导出字段顺序` 作提示).
+您需要勾选想要导出的列. 导出 CSV 文件或 Excel 表格时, 列的顺序由您勾选的顺序决定 (页面中会有 `导出字段顺序` 作提示).
 
 1. 简单的 ADIF 文件
    + 仅包含如下字段
@@ -83,7 +83,7 @@ v1.4.0
      6. FREQ
      7. BAND_RX
      8. FREQ_RX
-2. 标准 csv (使用 `golang: encoding/csv` 库)
+2. 标准 CSV 文件 (使用 `golang: encoding/csv` 库)
    + 可以自选要导出哪些信息
      1. 位号 - index
      2. 呼号 - callsign
@@ -100,7 +100,7 @@ v1.4.0
      13. 己方功率 - tpwr
      14. 己方台址 - tqth
      15. 备注 - rmks
-3. XLSX 文件 (使用 `golang: github.com/xuri/excelize/v2` 库)
+3. Excel 表格文件 (使用 `golang: github.com/xuri/excelize/v2` 库)
    + 可以自选要导出哪些信息
      1. 位号 - index
      2. 呼号 - callsign
