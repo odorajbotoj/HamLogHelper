@@ -328,7 +328,8 @@ function onload() {
     });
 
     // 询问文件名
-    logname = prompt("输入要打开的文件名（不存在则新建）", "newlogbook");
+    const now = new Date();
+    logname = prompt("输入要打开的文件名（不存在则新建）", `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`);
     if (logname == null || logname == "") {
         alert("您没有输入文件名");
         return;
