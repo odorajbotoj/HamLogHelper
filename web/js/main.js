@@ -35,7 +35,7 @@ function update_dt() {
 function clear_input() {
     document.querySelectorAll("input").forEach((ele) => { if (ele.type == "text" && !ele.disabled) ele.value = ""; });
     document.getElementById("index").value = 0; // by default, means new log line
-    document.getElementById("rst").value = 59; // by default
+    document.getElementById("rst").value = "59"; // by default
 }
 
 // 自动更新时间
@@ -77,7 +77,7 @@ function deletelog(idx) {
             "dt": document.getElementById(`log_td_i${idx}_dt`).innerText,
             "freq": document.getElementById(`log_td_i${idx}_freq`).innerText,
             "mode": document.getElementById(`log_td_i${idx}_mode`).innerText,
-            "rst": parseInt(document.getElementById(`log_td_i${idx}_rst`).innerText),
+            "rst": document.getElementById(`log_td_i${idx}_rst`).innerText,
             "rrig": document.getElementById(`log_td_i${idx}_rrig`).innerText,
             "rant": document.getElementById(`log_td_i${idx}_rant`).innerText,
             "rpwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
@@ -293,7 +293,7 @@ function onload() {
                 "dt": document.getElementById("dt").value,
                 "freq": document.getElementById("freq").value,
                 "mode": document.getElementById("mode").value,
-                "rst": parseInt(document.getElementById("rst").value),
+                "rst": document.getElementById("rst").value,
                 "rrig": document.getElementById("rrig").value,
                 "rant": document.getElementById("rant").value,
                 "rpwr": document.getElementById("rpwr").value,

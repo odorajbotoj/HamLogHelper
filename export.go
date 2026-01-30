@@ -126,7 +126,7 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 			case 4:
 				cl = append(cl, line.Mode)
 			case 5:
-				cl = append(cl, strconv.Itoa(line.Rst))
+				cl = append(cl, line.getRst())
 			case 6:
 				cl = append(cl, line.RRig)
 			case 7:
@@ -230,7 +230,7 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.Mode)
 				idx++
 			case 5:
-				xlsx.SetCellInt("Sheet1", getCellIdx(int64(i+2), idx), int64(line.Rst))
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.getRst())
 				idx++
 			case 6:
 				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RRig)

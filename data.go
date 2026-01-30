@@ -1,5 +1,7 @@
 package main
 
+import "strconv"
+
 type DataType int
 
 const (
@@ -15,7 +17,7 @@ type LogLine struct {
 	Dt       string `json:"dt"`
 	Freq     string `json:"freq"`
 	Mode     string `json:"mode"`
-	Rst      int    `json:"rst"`
+	Rst      any    `json:"rst"`
 	RRig     string `json:"rrig"`
 	RAnt     string `json:"rant"`
 	RPwr     string `json:"rpwr"`
@@ -27,10 +29,21 @@ type LogLine struct {
 	Rmks     string `json:"rmks"`
 }
 
+func (ll LogLine) getRst() string {
+	switch v := ll.Rst.(type) {
+	case float64:
+		return strconv.Itoa(int(v))
+	case string:
+		return v
+	default:
+		return ""
+	}
+}
+
 type Data struct {
 	Type    DataType `json:"type"`
 	Message string   `json:"message"`
-	Payload LogLine  `json:"payload,omitempty"`
+	Payload LogLine  `json:"payload"`
 }
 
 type ExportData struct {

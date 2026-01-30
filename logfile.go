@@ -22,7 +22,7 @@ func parseLog(file *os.File) ([]LogLine, error) {
 		var line LogLine
 		if err := json.Unmarshal(scanner.Bytes(), &line); err != nil {
 			log.Printf("Failed to unmarshal a line. %v\n", err)
-			continue
+			return nil, err // or u will lose your data
 		}
 		lst.set(line.Index, &line)
 	}
