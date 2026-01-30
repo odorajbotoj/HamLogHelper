@@ -178,22 +178,22 @@ footer {
     grid-row: 6;
 }
 
-#rpwrlabel {
+#rantlabel {
     grid-column: 3;
     grid-row: 7;
 }
 
-#rpwr {
+#rant {
     grid-column: 4;
     grid-row: 7;
 }
 
-#rantlabel {
+#rpwrlabel {
     grid-column: 3;
     grid-row: 8;
 }
 
-#rant {
+#rpwr {
     grid-column: 4;
     grid-row: 8;
 }
@@ -228,42 +228,42 @@ footer {
     grid-row: 10;
 }
 
-#tpwrlock {
-    grid-column: 1;
-    grid-row: 11;
-}
-
-#tpwrlocklabel {
-    grid-column: 2;
-    grid-row: 11;
-}
-
-#tpwrlabel {
-    grid-column: 3;
-    grid-row: 11;
-}
-
-#tpwr {
-    grid-column: 4;
-    grid-row: 11;
-}
-
 #tantlock {
     grid-column: 1;
-    grid-row: 12;
+    grid-row: 11;
 }
 
 #tantlocklabel {
     grid-column: 2;
-    grid-row: 12;
+    grid-row: 11;
 }
 
 #tantlabel {
     grid-column: 3;
-    grid-row: 12;
+    grid-row: 11;
 }
 
 #tant {
+    grid-column: 4;
+    grid-row: 11;
+}
+
+#tpwrlock {
+    grid-column: 1;
+    grid-row: 12;
+}
+
+#tpwrlocklabel {
+    grid-column: 2;
+    grid-row: 12;
+}
+
+#tpwrlabel {
+    grid-column: 3;
+    grid-row: 12;
+}
+
+#tpwr {
     grid-column: 4;
     grid-row: 12;
 }

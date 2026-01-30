@@ -17,12 +17,12 @@ type LogLine struct {
 	Mode     string `json:"mode"`
 	Rst      int    `json:"rst"`
 	RRig     string `json:"rrig"`
-	RPwr     string `json:"rpwr"`
 	RAnt     string `json:"rant"`
+	RPwr     string `json:"rpwr"`
 	RQth     string `json:"rqth"`
 	TRig     string `json:"trig"`
-	TPwr     string `json:"tpwr"`
 	TAnt     string `json:"tant"`
+	TPwr     string `json:"tpwr"`
 	TQth     string `json:"tqth"`
 	Rmks     string `json:"rmks"`
 }

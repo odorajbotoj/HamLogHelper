@@ -11,7 +11,7 @@ var re = new RegExp("^(([1-9]\\d*)|0)\\.\\d+/[+-](([1-9]\\d*)|0)\\.\\d+$");
 var nextlog = 1;
 var marks = {};
 
-var dynamics = { "rrig": new Set(), "rpwr": new Set(), "rant": new Set(), "rqth": new Set() };
+var dynamics = { "rrig": new Set(), "rant": new Set(), "rpwr": new Set(), "rqth": new Set() };
 
 const ALLOWED_MODES = [
     "AM", "ARDOP", "ATV", "CHIP", "CLO", "CONTESTI", "CW", "DIGITALVOICE", "DOMINO", "DYNAMIC", "FAX",
@@ -58,7 +58,7 @@ function click_lock(cb, id) {
 
 // 编辑条目
 function editlog(idx) {
-    let keys = ["index", "callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
+    let keys = ["index", "callsign", "dt", "freq", "mode", "rst", "rrig", "rant", "rpwr", "rqth", "trig", "tant", "tpwr", "tqth", "rmks"];
     for (let i = 0; i < keys.length; i++) {
         document.getElementById(`${keys[i]}`).value = document.getElementById(`log_td_i${idx}_${keys[i]}`).innerText;
     }
@@ -79,12 +79,12 @@ function deletelog(idx) {
             "mode": document.getElementById(`log_td_i${idx}_mode`).innerText,
             "rst": parseInt(document.getElementById(`log_td_i${idx}_rst`).innerText),
             "rrig": document.getElementById(`log_td_i${idx}_rrig`).innerText,
-            "rpwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
             "rant": document.getElementById(`log_td_i${idx}_rant`).innerText,
+            "rpwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
             "rqth": document.getElementById(`log_td_i${idx}_rqth`).innerText,
             "trig": document.getElementById(`log_td_i${idx}_trig`).innerText,
-            "tpwr": document.getElementById(`log_td_i${idx}_tpwr`).innerText,
             "tant": document.getElementById(`log_td_i${idx}_tant`).innerText,
+            "tpwr": document.getElementById(`log_td_i${idx}_tpwr`).innerText,
             "tqth": document.getElementById(`log_td_i${idx}_tqth`).innerText,
             "rmks": document.getElementById(`log_td_i${idx}_rmks`).innerText
         }
@@ -105,11 +105,11 @@ function add2tmpl(idx) {
     let newtmpl = {
         "callsign": document.getElementById(`log_td_i${idx}_callsign`).innerText,
         "rig": document.getElementById(`log_td_i${idx}_rrig`).innerText,
-        "pwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
         "ant": document.getElementById(`log_td_i${idx}_rant`).innerText,
+        "pwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
         "qth": document.getElementById(`log_td_i${idx}_rqth`).innerText
     };
-    if (!tmpljson.some(item => item.callsign == newtmpl.callsign && item.rig == newtmpl.rig && item.pwr == newtmpl.pwr && item.ant == newtmpl.ant && item.qth == newtmpl.qth)) {
+    if (!tmpljson.some(item => item.callsign == newtmpl.callsign && item.rig == newtmpl.rig && item.ant == newtmpl.ant && item.pwr == newtmpl.pwr && item.qth == newtmpl.qth)) {
         tmpljson.push(newtmpl);
         fetch(`http://${window.location.host}/editdb`, {
             method: "POST",
@@ -249,30 +249,30 @@ function onload() {
         document.getElementById("dynamics").innerHTML = "";
         document.getElementById("mapsuggests").innerHTML = "";
         for (let i of rst) {
-            suggests_ol.insertAdjacentHTML("beforeend", `<li>[模板]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('callsign').value='${i.callsign}';document.getElementById('rrig').value='${i.rig}';document.getElementById('rpwr').value='${i.pwr}';document.getElementById('rant').value='${i.ant}';document.getElementById('rqth').value='${i.qth}';document.getElementById('callsign').focus();">${i.callsign}</a><i>${i.rig}|${i.pwr}|${i.ant}|${i.qth}</i></li>`);
+            suggests_ol.insertAdjacentHTML("beforeend", `<li>[模板]&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('callsign').value='${i.callsign}';document.getElementById('rrig').value='${i.rig}';document.getElementById('rant').value='${i.ant}';document.getElementById('rpwr').value='${i.pwr}';document.getElementById('rqth').value='${i.qth}';document.getElementById('callsign').focus();">${i.callsign}</a><i>${i.rig}|${i.ant}|${i.pwr}|${i.qth}</i></li>`);
         }
     });
     // 字典自动补全
     document.getElementById("rrig").addEventListener("input", autocomplete_cb("rig", "设备"));
-    document.getElementById("rpwr").addEventListener("input", autocomplete_cb("pwr", "功率"));
     document.getElementById("rant").addEventListener("input", autocomplete_cb("ant", "天线"));
+    document.getElementById("rpwr").addEventListener("input", autocomplete_cb("pwr", "功率"));
     document.getElementById("rqth").addEventListener("input", autocomplete_cb("qth", "QTH"));
 
     // 自动历史输入
     document.getElementById("rrig").addEventListener("focus", dynamichistory_cb("rrig"));
-    document.getElementById("rpwr").addEventListener("focus", dynamichistory_cb("rpwr"));
     document.getElementById("rant").addEventListener("focus", dynamichistory_cb("rant"));
+    document.getElementById("rpwr").addEventListener("focus", dynamichistory_cb("rpwr"));
     document.getElementById("rqth").addEventListener("focus", dynamichistory_cb("rqth"));
 
     // 输入选择快捷键
     document.getElementById("rrig").addEventListener("keydown", quickin_cb("rrig"));
-    document.getElementById("rpwr").addEventListener("keydown", quickin_cb("rpwr"));
     document.getElementById("rant").addEventListener("keydown", quickin_cb("rant"));
+    document.getElementById("rpwr").addEventListener("keydown", quickin_cb("rpwr"));
     document.getElementById("rqth").addEventListener("keydown", quickin_cb("rqth"));
 
     // 检查复选框状态
     document.getElementById("dt").disabled = document.getElementById("dtauto").checked;
-    let lock_names = ["freq", "mode", "trig", "tpwr", "tant", "tqth"];
+    let lock_names = ["freq", "mode", "trig", "tant", "tpwr", "tqth"];
     for (let i of lock_names) document.getElementById(i).disabled = document.getElementById(i + "lock").checked;
 
     // 清空输入框
@@ -295,12 +295,12 @@ function onload() {
                 "mode": document.getElementById("mode").value,
                 "rst": parseInt(document.getElementById("rst").value),
                 "rrig": document.getElementById("rrig").value,
-                "rpwr": document.getElementById("rpwr").value,
                 "rant": document.getElementById("rant").value,
+                "rpwr": document.getElementById("rpwr").value,
                 "rqth": document.getElementById("rqth").value,
                 "trig": document.getElementById("trig").value,
-                "tpwr": document.getElementById("tpwr").value,
                 "tant": document.getElementById("tant").value,
+                "tpwr": document.getElementById("tpwr").value,
                 "tqth": document.getElementById("tqth").value,
                 "rmks": document.getElementById("rmks").value
             }
@@ -314,8 +314,8 @@ function onload() {
             return;
         }
         dynamics["rrig"].add(document.getElementById("rrig").value);
-        dynamics["rpwr"].add(document.getElementById("rpwr").value);
         dynamics["rant"].add(document.getElementById("rant").value);
+        dynamics["rpwr"].add(document.getElementById("rpwr").value);
         dynamics["rqth"].add(document.getElementById("rqth").value);
         socket.send(JSON.stringify(retjson));
         clear_input();
@@ -344,7 +344,7 @@ function onload() {
             document.getElementById("inputtitle").innerText = `输入 #${nextlog}`;
             document.getElementById("submit").value = `提交 #${nextlog}`;
             // 记录表格
-            let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
+            let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rant", "rpwr", "rqth", "trig", "tant", "tpwr", "tqth", "rmks"];
             let inner = `<td><input type="button" value="标记为删除" onclick="deletelog(${info.payload.index})"><input type="button" value="添加到模板" onclick="add2tmpl(${info.payload.index})"></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
             for (let i = 0; i < keys.length; i++) {
                 inner += `<td id="log_td_i${info.payload.index}_${keys[i]}">${info.payload[keys[i]]}</td>`;

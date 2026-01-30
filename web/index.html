@@ -53,12 +53,12 @@
                             <td>模式</td>
                             <td>信号</td>
                             <td>对方设备</td>
-                            <td>对方功率</td>
                             <td>对方天线</td>
+                            <td>对方功率</td>
                             <td>对方台址</td>
                             <td>己方设备</td>
-                            <td>己方功率</td>
                             <td>己方天线</td>
+                            <td>己方功率</td>
                             <td>己方台址</td>
                             <td>备注</td>
                         </tr>
@@ -106,11 +106,11 @@
                         <label for="rrig" id="rriglabel">对方设备: </label>
                         <input type="text" name="rrig" id="rrig" required>
 
-                        <label for="rpwr" id="rpwrlabel">对方功率: </label>
-                        <input type="text" name="rpwr" id="rpwr" required>
-
                         <label for="rant" id="rantlabel">对方天线: </label>
                         <input type="text" name="rant" id="rant" required>
+
+                        <label for="rpwr" id="rpwrlabel">对方功率: </label>
+                        <input type="text" name="rpwr" id="rpwr" required>
 
                         <label for="rqth" id="rqthlabel">对方台址: </label>
                         <input type="text" name="rqth" id="rqth" required>
@@ -121,17 +121,17 @@
                         <label for="trig" id="triglabel">己方设备: </label>
                         <input type="text" name="trig" id="trig" required>
 
-                        <input type="checkbox" name="tpwrlock" id="tpwrlock" value="lock"
-                            onclick="click_lock(this, 'tpwr')" tabindex="-1">
-                        <label for="tpwrlock" id="tpwrlocklabel">锁定</label>
-                        <label for="tpwr" id="tpwrlabel">己方功率: </label>
-                        <input type="text" name="tpwr" id="tpwr" required>
-
                         <input type="checkbox" name="tantlock" id="tantlock" value="lock"
                             onclick="click_lock(this, 'tant')" tabindex="-1">
                         <label for="tantlock" id="tantlocklabel">锁定</label>
                         <label for="tant" id="tantlabel">己方天线: </label>
                         <input type="text" name="tant" id="tant" required>
+
+                        <input type="checkbox" name="tpwrlock" id="tpwrlock" value="lock"
+                            onclick="click_lock(this, 'tpwr')" tabindex="-1">
+                        <label for="tpwrlock" id="tpwrlocklabel">锁定</label>
+                        <label for="tpwr" id="tpwrlabel">己方功率: </label>
+                        <input type="text" name="tpwr" id="tpwr" required>
 
                         <input type="checkbox" name="tqthlock" id="tqthlock" value="lock"
                             onclick="click_lock(this, 'tqth')" tabindex="-1">

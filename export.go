@@ -13,8 +13,8 @@ import (
 
 var fields []string = []string{
 	"位次", "呼号", "日期时间", "频率", "模式",
-	"信号", "对方设备", "对方功率", "对方天线", "对方台址",
-	"己方设备", "己方功率", "己方天线", "己方台址", "备注",
+	"信号", "对方设备", "对方天线", "对方功率", "对方台址",
+	"己方设备", "己方天线", "己方功率", "己方台址", "备注",
 }
 
 func getCellIdx(row, col int64) string {
@@ -130,17 +130,17 @@ func getCSV(w http.ResponseWriter, r *http.Request) {
 			case 6:
 				cl = append(cl, line.RRig)
 			case 7:
-				cl = append(cl, line.RPwr)
-			case 8:
 				cl = append(cl, line.RAnt)
+			case 8:
+				cl = append(cl, line.RPwr)
 			case 9:
 				cl = append(cl, line.RQth)
 			case 10:
 				cl = append(cl, line.TRig)
 			case 11:
-				cl = append(cl, line.TPwr)
-			case 12:
 				cl = append(cl, line.TAnt)
+			case 12:
+				cl = append(cl, line.TPwr)
 			case 13:
 				cl = append(cl, line.TQth)
 			case 14:
@@ -236,10 +236,10 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RRig)
 				idx++
 			case 7:
-				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RPwr)
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RAnt)
 				idx++
 			case 8:
-				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RAnt)
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RPwr)
 				idx++
 			case 9:
 				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.RQth)
@@ -248,10 +248,10 @@ func getXLSX(w http.ResponseWriter, r *http.Request) {
 				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TRig)
 				idx++
 			case 11:
-				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TPwr)
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TAnt)
 				idx++
 			case 12:
-				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TAnt)
+				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TPwr)
 				idx++
 			case 13:
 				xlsx.SetCellStr("Sheet1", getCellIdx(int64(i+2), idx), line.TQth)
