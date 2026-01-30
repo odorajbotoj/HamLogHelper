@@ -62,6 +62,7 @@ function editlog(idx) {
     for (let i = 0; i < keys.length; i++) {
         document.getElementById(`${keys[i]}`).value = document.getElementById(`log_td_i${idx}_${keys[i]}`).innerText;
     }
+    document.getElementById("inputtitle").innerText = `输入 #${idx}`;
     document.getElementById("submit").value = `提交 #${idx}`;
 }
 
@@ -328,6 +329,7 @@ function onload() {
         return;
     }
     document.getElementById("exportlink").href = `/export?n=${logname}`;
+
     // ws
     socket = new WebSocket(`ws://${window.location.host}/ws`);
     socket.onopen = () => { socket.send(JSON.stringify({ "type": 1, "message": logname })); };
@@ -339,6 +341,7 @@ function onload() {
             let markdel = false;
             // 更新提交提示
             nextlog = nextlog > info.payload.index ? nextlog : info.payload.index + 1;
+            document.getElementById("inputtitle").innerText = `输入 #${nextlog}`;
             document.getElementById("submit").value = `提交 #${nextlog}`;
             // 记录表格
             let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rpwr", "rant", "rqth", "trig", "tpwr", "tant", "tqth", "rmks"];
