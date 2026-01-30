@@ -109,16 +109,16 @@ function add2tmpl(idx) {
         "pwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
         "qth": document.getElementById(`log_td_i${idx}_rqth`).innerText
     };
-    if (!tmpljson.some(item => item.callsign == newtmpl.callsign && item.rig == newtmpl.rig && item.ant == newtmpl.ant && item.pwr == newtmpl.pwr && item.qth == newtmpl.qth)) {
-        tmpljson.push(newtmpl);
-        fetch(`http://${window.location.host}/editdb`, {
-            method: "POST",
-            headers: {
-                "Content-type": "application/x-www-form-urlencoded",
-            },
-            body: `type=tmpl&payload=${encodeURIComponent(JSON.stringify(tmpljson))}`
-        });
-    }
+    if (newtmpl.rig == "-" && newtmpl.ant == "-" && newtmpl.pwr == "-" && newtmpl.qth == "-") return;
+    if (tmpljson.some(item => item.callsign == newtmpl.callsign && item.rig == newtmpl.rig && item.ant == newtmpl.ant && item.pwr == newtmpl.pwr && item.qth == newtmpl.qth)) return;
+    tmpljson.push(newtmpl);
+    fetch(`http://${window.location.host}/editdb`, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+        },
+        body: `type=tmpl&payload=${encodeURIComponent(JSON.stringify(tmpljson))}`
+    });
 }
 
 function autocomplete_cb(name, str) {
@@ -313,10 +313,15 @@ function onload() {
             alert("无法解析的频率");
             return;
         }
-        dynamics["rrig"].add(document.getElementById("rrig").value);
-        dynamics["rant"].add(document.getElementById("rant").value);
-        dynamics["rpwr"].add(document.getElementById("rpwr").value);
-        dynamics["rqth"].add(document.getElementById("rqth").value);
+        if (retjson.payload.rrig == "") retjson.payload.rrig = "-";
+        else dynamics["rrig"].add(document.getElementById("rrig").value);
+        if (retjson.payload.rant == "") retjson.payload.rant = "-";
+        else dynamics["rant"].add(document.getElementById("rant").value);
+        if (retjson.payload.rpwr == "") retjson.payload.rpwr = "-";
+        else dynamics["rpwr"].add(document.getElementById("rpwr").value);
+        if (retjson.payload.rqth == "") retjson.payload.rqth = "-";
+        else dynamics["rqth"].add(document.getElementById("rqth").value);
+
         socket.send(JSON.stringify(retjson));
         clear_input();
         document.getElementById("callsign").focus();
