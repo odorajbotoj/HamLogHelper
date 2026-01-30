@@ -90,11 +90,11 @@ function deletelog(idx) {
         }
     }
     if (!ALLOWED_MODES.includes(retjson.payload.mode)) {
-        alert("未知的模式");
+        alert("未知的模式, 仅允许列表中的模式, 否则无效");
         return;
     }
     if (!re.test(retjson.payload.freq)) {
-        alert("无法解析的频率");
+        alert("无法解析的频率, 格式应为:\n接收频率(小数) / +或- 频差(小数), 如430.610/+9.0, 438.500/+0.0");
         return;
     }
     socket.send(JSON.stringify(retjson));
@@ -306,11 +306,11 @@ function onload() {
             }
         }
         if (!ALLOWED_MODES.includes(retjson.payload.mode)) {
-            alert("未知的模式");
+            alert("未知的模式, 仅允许列表中的模式, 否则无效");
             return;
         }
         if (!re.test(retjson.payload.freq)) {
-            alert("无法解析的频率");
+            alert("无法解析的频率, 格式应为:\n接收频率(小数) / +或- 频差(小数), 如430.610/+9.0, 438.500/+0.0");
             return;
         }
         if (retjson.payload.rrig == "") retjson.payload.rrig = "-";

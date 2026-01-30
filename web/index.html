@@ -91,14 +91,15 @@
                         <input type="checkbox" name="freqlock" id="freqlock" value="lock"
                             onclick="click_lock(this, 'freq')" tabindex="-1">
                         <label for="freqlock" id="freqlocklabel">锁定</label>
-                        <label for="freq" id="freqlabel">频率: </label>
-                        <input type="text" name="freq" id="freq" required>
+                        <label for="freq" id="freqlabel" title="接收频率(小数) / +或- 频差(小数), 如430.610/+9.0">频率: </label>
+                        <input type="text" name="freq" id="freq" placeholder="438.500/+0.0"
+                            title="接收频率(小数) / +或- 频差(小数), 如430.610/+9.0" required>
 
                         <input type="checkbox" name="modelock" id="modelock" value="lock"
                             onclick="click_lock(this, 'mode')" tabindex="-1">
                         <label for="modelock" id="modelocklabel">锁定</label>
-                        <label for="mode" id="modelabel">模式: </label>
-                        <input type="text" name="mode" id="mode" required>
+                        <label for="mode" id="modelabel" title="仅允许列表中的模式, 否则无效">模式: </label>
+                        <input type="text" name="mode" id="mode" placeholder="FM" title="仅允许列表中的模式, 否则无效" required>
 
                         <label for="rst" id="rstlabel">信号: </label>
                         <input type="text" name="rst" id="rst" required>
