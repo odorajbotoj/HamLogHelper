@@ -40,7 +40,7 @@
     </header>
     <div id="mainpage">
         <div class="field" id="logdiv">
-            <p class="fieldtitle">记录 <a href="#" id="exportlink">导出</a><span id="connected"></span></p>
+            <p class="fieldtitle">记录 <a href="#" class="exportlink">导出</a><span id="connected"></span></p>
             <div id="logs">
                 <table border="1">
                     <thead>
@@ -49,23 +49,24 @@
                             <td>位号</td>
                             <td>呼号</td>
                             <td>日期时间</td>
-                            <td>频率</td>
-                            <td>模式</td>
+                            <td hidden>频率</td>
+                            <td hidden>模式</td>
                             <td>信号</td>
                             <td>对方设备</td>
                             <td>对方天线</td>
                             <td>对方功率</td>
                             <td>对方台址</td>
-                            <td>己方设备</td>
-                            <td>己方天线</td>
-                            <td>己方功率</td>
-                            <td>己方台址</td>
+                            <td hidden>己方设备</td>
+                            <td hidden>己方天线</td>
+                            <td hidden>己方功率</td>
+                            <td hidden>己方台址</td>
                             <td>备注</td>
                         </tr>
                     </thead>
                     <tbody id="logtable"></tbody>
                 </table>
             </div>
+            <a href="#" class="exportlink">导出</a>
         </div>
         {{ with .Key }}
         <div class="field" id="mapdiv">

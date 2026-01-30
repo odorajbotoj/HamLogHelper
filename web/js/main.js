@@ -334,7 +334,7 @@ function onload() {
         alert("您没有输入文件名");
         return;
     }
-    document.getElementById("exportlink").href = `/export?n=${logname}`;
+    document.querySelectorAll(".exportlink").forEach(e => e.href = `/export?n=${logname}`);
 
     // ws
     socket = new WebSocket(`ws://${window.location.host}/ws`);
@@ -353,7 +353,7 @@ function onload() {
             let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rant", "rpwr", "rqth", "trig", "tant", "tpwr", "tqth", "rmks"];
             let inner = `<td><input type="button" value="标记为删除" onclick="deletelog(${info.payload.index})"><input type="button" value="添加到模板" onclick="add2tmpl(${info.payload.index})"></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
             for (let i = 0; i < keys.length; i++) {
-                inner += `<td id="log_td_i${info.payload.index}_${keys[i]}">${info.payload[keys[i]]}</td>`;
+                inner += `<td id="log_td_i${info.payload.index}_${keys[i]}" ${i == 2 || i == 3 || (i >= 9 && i <= 12) ? "hidden" : ""}>${info.payload[keys[i]]}</td>`;
             }
             if (info.message == "SYNC" || info.message == "ADD") {
                 let newtr = document.createElement("tr");
