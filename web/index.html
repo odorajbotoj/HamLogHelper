@@ -73,7 +73,10 @@
         </div>
         {{ end }}
         <div class="field" id="inputdiv">
-            <p class="fieldtitle" id="inputtitle">输入</p>
+            <div class="fieldtitle">
+                <span id="inputtitle">输入</span>&nbsp;|&nbsp;<a href="javascript:void(0);"
+                    onclick="document.querySelectorAll('.hideable').forEach(e => e.hidden = !e.hidden);">显示/隐藏己方信息</a>
+            </div>
             <div id="inputs">
                 <form tabindex="-1" id="infoform">
                     <div id="formdiv">
@@ -90,17 +93,19 @@
                             required>
 
                         <input type="checkbox" name="freqlock" id="freqlock" value="lock"
-                            onclick="click_lock(this, 'freq')" tabindex="-1">
-                        <label for="freqlock" id="freqlocklabel">锁定</label>
-                        <label for="freq" id="freqlabel" title="接收频率(小数) / +或- 频差(小数), 如430.610/+9.0">频率: </label>
+                            onclick="click_lock(this, 'freq')" tabindex="-1" class="hideable">
+                        <label for="freqlock" id="freqlocklabel" class="hideable">锁定</label>
+                        <label for="freq" id="freqlabel" title="接收频率(小数) / +或- 频差(小数), 如430.610/+9.0"
+                            class="hideable">频率: </label>
                         <input type="text" name="freq" id="freq" placeholder="438.500/+0.0"
-                            title="接收频率(小数) / +或- 频差(小数), 如430.610/+9.0" required>
+                            title="接收频率(小数) / +或- 频差(小数), 如430.610/+9.0" class="hideable" required>
 
                         <input type="checkbox" name="modelock" id="modelock" value="lock"
-                            onclick="click_lock(this, 'mode')" tabindex="-1">
-                        <label for="modelock" id="modelocklabel">锁定</label>
-                        <label for="mode" id="modelabel" title="仅允许列表中的模式, 否则无效">模式: </label>
-                        <input type="text" name="mode" id="mode" placeholder="FM" title="仅允许列表中的模式, 否则无效" required>
+                            onclick="click_lock(this, 'mode')" tabindex="-1" class="hideable">
+                        <label for="modelock" id="modelocklabel" class="hideable">锁定</label>
+                        <label for="mode" id="modelabel" title="仅允许列表中的模式, 否则无效" class="hideable">模式: </label>
+                        <input type="text" name="mode" id="mode" placeholder="FM" title="仅允许列表中的模式, 否则无效"
+                            class="hideable" required>
 
                         <label for="rst" id="rstlabel">信号: </label>
                         <input type="text" name="rst" id="rst" required>
@@ -118,28 +123,28 @@
                         <input type="text" name="rqth" id="rqth">
 
                         <input type="checkbox" name="triglock" id="triglock" value="lock"
-                            onclick="click_lock(this, 'trig')" tabindex="-1">
-                        <label for="triglock" id="triglocklabel">锁定</label>
-                        <label for="trig" id="triglabel">己方设备: </label>
-                        <input type="text" name="trig" id="trig" required>
+                            onclick="click_lock(this, 'trig')" tabindex="-1" class="hideable">
+                        <label for="triglock" id="triglocklabel" class="hideable">锁定</label>
+                        <label for="trig" id="triglabel" class="hideable">己方设备: </label>
+                        <input type="text" name="trig" id="trig" class="hideable" required>
 
                         <input type="checkbox" name="tantlock" id="tantlock" value="lock"
-                            onclick="click_lock(this, 'tant')" tabindex="-1">
-                        <label for="tantlock" id="tantlocklabel">锁定</label>
-                        <label for="tant" id="tantlabel">己方天线: </label>
-                        <input type="text" name="tant" id="tant" required>
+                            onclick="click_lock(this, 'tant')" tabindex="-1" class="hideable">
+                        <label for="tantlock" id="tantlocklabel" class="hideable">锁定</label>
+                        <label for="tant" id="tantlabel" class="hideable">己方天线: </label>
+                        <input type="text" name="tant" id="tant" class="hideable" required>
 
                         <input type="checkbox" name="tpwrlock" id="tpwrlock" value="lock"
-                            onclick="click_lock(this, 'tpwr')" tabindex="-1">
-                        <label for="tpwrlock" id="tpwrlocklabel">锁定</label>
-                        <label for="tpwr" id="tpwrlabel">己方功率: </label>
-                        <input type="text" name="tpwr" id="tpwr" required>
+                            onclick="click_lock(this, 'tpwr')" tabindex="-1" class="hideable">
+                        <label for="tpwrlock" id="tpwrlocklabel" class="hideable">锁定</label>
+                        <label for="tpwr" id="tpwrlabel" class="hideable">己方功率: </label>
+                        <input type="text" name="tpwr" id="tpwr" class="hideable" required>
 
                         <input type="checkbox" name="tqthlock" id="tqthlock" value="lock"
-                            onclick="click_lock(this, 'tqth')" tabindex="-1">
-                        <label for="tqthlock" id="tqthlocklabel">锁定</label>
-                        <label for="tqth" id="tqthlabel">己方台址: </label>
-                        <input type="text" name="tqth" id="tqth" required>
+                            onclick="click_lock(this, 'tqth')" tabindex="-1" class="hideable">
+                        <label for="tqthlock" id="tqthlocklabel" class="hideable">锁定</label>
+                        <label for="tqth" id="tqthlabel" class="hideable">己方台址: </label>
+                        <input type="text" name="tqth" id="tqth" class="hideable" required>
 
                         <label for="rmks" id="rmkslabel">备注: </label>
                         <input type="text" name="rmks" id="rmks">
