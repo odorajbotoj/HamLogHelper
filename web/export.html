@@ -35,6 +35,19 @@
             document.getElementById("exlst").innerHTML = exlst.join();
         }
     </script>
+    <style>
+        table {
+            margin: 0 auto;
+            border: 1px solid #000000;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000000;
+            padding: 2px;
+        }
+    </style>
 </head>
 
 <body>
@@ -61,7 +74,7 @@
                 onclick="window.open('/getxlsx?n={{ .Name }}&s='+exportlist.join('')+'&bjthhmm='+(document.getElementById('bjt').checked ? '1' : '0'))"
                 value="Excel表格">
         </div>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
                     <td><input type="checkbox" autocomplete="off" onclick="checkclick(this, 'a')" class="sel"

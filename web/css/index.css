@@ -28,6 +28,18 @@ footer {
     color: #fff;
 }
 
+table {
+    margin: 0 auto;
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #000000;
+    padding: 2px;
+}
+
 #mainpage {
     width: 100dvw;
     height: 90dvh;

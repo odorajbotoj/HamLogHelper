@@ -142,6 +142,19 @@
             });
         }
     </script>
+    <style>
+        table {
+            margin: 0 auto;
+            border: 1px solid #000000;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000000;
+            padding: 2px;
+        }
+    </style>
 </head>
 
 <body onload="onload()">
@@ -150,7 +163,7 @@
     <div id="edittmpl">
         <fieldset>
             <legend>模板 tmpl</legend>
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <td>操作</td>
@@ -176,7 +189,7 @@
     <div id="editdict">
         <fieldset>
             <legend>字典 dict</legend>
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <td>操作</td>
@@ -189,7 +202,7 @@
             <input type="button" value="新增设备条目"
                 onclick="document.getElementById('dicttable_rig').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除本条' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新增补全条目' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
             <hr>
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <td>操作</td>
@@ -202,7 +215,7 @@
             <input type="button" value="新增天线条目"
                 onclick="document.getElementById('dicttable_ant').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除本条' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新增补全条目' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
             <hr>
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <td>操作</td>
@@ -215,7 +228,7 @@
             <input type="button" value="新增功率条目"
                 onclick="document.getElementById('dicttable_pwr').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除本条' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新增补全条目' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
             <hr>
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <td>操作</td>
