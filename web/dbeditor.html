@@ -104,7 +104,7 @@
                 },
                 body: `type=tmpl&payload=${encodeURIComponent(JSON.stringify(jsontmpl))}`
             }).then((response) => {
-                if (response.ok) document.querySelectorAll(".tmplstat").forEach(e => e.innerText = "模板保存成功");
+                if (response.ok) window.location.reload();
                 else document.querySelectorAll(".tmplstat").forEach(e => e.innerText = "模板保存失败");
             });
             // 整理提交字典
@@ -152,8 +152,8 @@
                 },
                 body: `type=dict&payload=${encodeURIComponent(JSON.stringify(jsondict))}`
             }).then((response) => {
-                if (response.ok) document.querySelectorAll(".dictstat").forEach(e => e.innerText = " | 字典保存成功");
-                else document.querySelectorAll(".dictstat").forEach(e => e.innerText = " | 字典保存失败");
+                if (response.ok) window.location.reload();
+                else document.querySelectorAll(".dictstat").forEach(e => e.innerText = " 字典保存失败");
             });
         }
     </script>
