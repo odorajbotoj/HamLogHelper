@@ -6,7 +6,7 @@ var geocoder;
 var markers;
 var socket;
 var logname;
-var tmpljson, dictjson;
+var tmpljson = new Array(), dictjson = { rig: {}, ant: {}, pwr: {}, qth: {} };
 var re = new RegExp("^(([1-9]\\d*)|0)\\.\\d+/[+-](([1-9]\\d*)|0)\\.\\d+$");
 var nextlog = 1;
 var marks = {};

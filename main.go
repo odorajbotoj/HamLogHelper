@@ -55,6 +55,12 @@ func main() {
 		dictJson, _ = io.ReadAll(file)
 		file.Close()
 	}
+	if !json.Valid(tmplJson) {
+		tmplJson = []byte("[]")
+	}
+	if !json.Valid(dictJson) {
+		dictJson = []byte("{ \"rig\": {}, \"ant\": {}, \"pwr\": {}, \"qth\": {} }")
+	}
 
 	// 嵌入文件系统处理
 	filesys, err := fs.Sub(embedFiles, "web")
