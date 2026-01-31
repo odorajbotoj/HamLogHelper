@@ -9,6 +9,12 @@
         // 数据
         var tmpljson, dictjson;
 
+        // 伪选项卡
+        function show(id) {
+            document.querySelectorAll(".edit").forEach(e => e.hidden = true);
+            document.getElementById(id).hidden = false;
+        }
+
         // 获取数据
         fetch(`http://${window.location.host}/tmpl.json`)
             .then((response) => {
@@ -21,7 +27,7 @@
                     let tmpltb = document.getElementById("tmpltable");
                     for (let i of tmpljson) {
                         let tr = document.createElement("tr");
-                        tr.innerHTML = `<td><input type="button" value="删除" onclick="this.parentNode.parentNode.remove();"><input type="button" value="上移" onclick="if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);"><input type="button" value="下移" onclick="if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);"></td><td><input type="text" class="tmpl_callsign" value="${i.callsign}"></td><td><input type="text" class="tmpl_rig" value="${i.rig}"></td><td><input type="text" class="tmpl_ant" value="${i.ant}"></td><td><input type="text" class="tmpl_pwr" value="${i.pwr}"></td><td><input type="text" class="tmpl_qth" value="${i.qth}"></td>`;
+                        tr.innerHTML = `<td><input type="button" value="🗑️" onclick="this.parentNode.parentNode.remove();"><input type="button" value="⬆️" onclick="if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);"><input type="button" value="⬇️" onclick="if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);"></td><td><input type="text" class="tmpl_callsign" value="${i.callsign}"></td><td><input type="text" class="tmpl_rig" value="${i.rig}"></td><td><input type="text" class="tmpl_ant" value="${i.ant}"></td><td><input type="text" class="tmpl_pwr" value="${i.pwr}"></td><td><input type="text" class="tmpl_qth" value="${i.qth}"></td>`;
                         tmpltb.appendChild(tr);
                     }
                 }
@@ -37,7 +43,7 @@
                 let dicttb_rig = document.getElementById("dicttable_rig");
                 for (let i of Object.keys(dictjson.rig)) {
                     let tr = document.createElement("tr");
-                    let inh = `<td><input type="button" value="删除本条" onclick="this.parentNode.parentNode.remove();"><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新增补全条目" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
+                    let inh = `<td><input type="button" value="🗑️" onclick="this.parentNode.parentNode.remove();"><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新建值" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
                     for (let j of dictjson.rig[i]) {
                         inh += `<div><input type="text" class="dict_td_input" value="${j}" onblur="if (!this.value) this.parentNode.remove();"></div>`;
                     }
@@ -47,7 +53,7 @@
                 let dicttb_ant = document.getElementById("dicttable_ant");
                 for (let i of Object.keys(dictjson.ant)) {
                     let tr = document.createElement("tr");
-                    let inh = `<td><input type="button" value="删除本条" onclick="this.parentNode.parentNode.remove();"><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新增补全条目" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
+                    let inh = `<td><input type="button" value="🗑️" onclick="this.parentNode.parentNode.remove();"><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新建值" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
                     for (let j of dictjson.ant[i]) {
                         inh += `<div><input type="text" class="dict_td_input" value="${j}" onblur="if (!this.value) this.parentNode.remove();"></div>`;
                     }
@@ -57,7 +63,7 @@
                 let dicttb_pwr = document.getElementById("dicttable_pwr");
                 for (let i of Object.keys(dictjson.pwr)) {
                     let tr = document.createElement("tr");
-                    let inh = `<td><input type="button" value="删除本条" onclick="this.parentNode.parentNode.remove();"><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新增补全条目" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
+                    let inh = `<td><input type="button" value="🗑️" onclick="this.parentNode.parentNode.remove();"><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新建值" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
                     for (let j of dictjson.pwr[i]) {
                         inh += `<div><input type="text" class="dict_td_input" value="${j}" onblur="if (!this.value) this.parentNode.remove();"></div>`;
                     }
@@ -67,7 +73,7 @@
                 let dicttb_qth = document.getElementById("dicttable_qth");
                 for (let i of Object.keys(dictjson.qth)) {
                     let tr = document.createElement("tr");
-                    let inh = `<td><input type="button" value="删除本条" onclick="this.parentNode.parentNode.remove();"><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新增补全条目" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
+                    let inh = `<td><input type="button" value="🗑️" onclick="this.parentNode.parentNode.remove();"><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type="button" value="新建值" onclick="this.parentNode.parentNode.querySelector('.dict_values').insertAdjacentHTML('beforeend', '<div><input type=\\'text\\' class=\\'dict_td_input\\' onblur=\\'if (!this.value) this.parentNode.remove();\\'></div>');"></td><td><input type="text" class="dict_key" value="${i}"></td><td class="dict_values">`;
                     for (let j of dictjson.qth[i]) {
                         inh += `<div><input type="text" class="dict_td_input" value="${j}" onblur="if (!this.value) this.parentNode.remove();"></div>`;
                     }
@@ -76,69 +82,78 @@
                 }
             });
 
-        function onload() {
-            // 监听提交
-            document.getElementById("tmplform").addEventListener("submit", (ev) => {
-                if (confirm("将覆盖原有 tmpl.json , 继续?")) {
-                    let j = new Array();
-                    for (let ele of document.getElementById("tmpltable").children) {
-                        let callsign = ele.querySelector(".tmpl_callsign").value;
-                        let rig = ele.querySelector(".tmpl_rig").value;
-                        let ant = ele.querySelector(".tmpl_ant").value;
-                        let pwr = ele.querySelector(".tmpl_pwr").value;
-                        let qth = ele.querySelector(".tmpl_qth").value;
-                        if (!callsign || !rig || !ant || !pwr || !qth) continue;
-                        if (j.some(item => item.callsign == callsign && item.rig == rig && item.ant == ant && item.pwr == pwr && item.qth == qth)) continue;
-                        j.push({ "callsign": callsign, "rig": rig, "ant": ant, "pwr": pwr, "qth": qth });
-                    }
-                    document.getElementById("tmplpayload").value = JSON.stringify(j);
-                } else {
-                    ev.preventDefault();
-                }
+        function submit() {
+            let tmplsuccess = false;
+            let dictsuccess = false;
+            // 整理提交模板
+            let jsontmpl = new Array();
+            for (let ele of document.getElementById("tmpltable").children) {
+                let callsign = ele.querySelector(".tmpl_callsign").value;
+                let rig = ele.querySelector(".tmpl_rig").value;
+                let ant = ele.querySelector(".tmpl_ant").value;
+                let pwr = ele.querySelector(".tmpl_pwr").value;
+                let qth = ele.querySelector(".tmpl_qth").value;
+                if (!callsign || !rig || !ant || !pwr || !qth) continue;
+                if (jsontmpl.some(item => item.callsign == callsign && item.rig == rig && item.ant == ant && item.pwr == pwr && item.qth == qth)) continue;
+                jsontmpl.push({ "callsign": callsign, "rig": rig, "ant": ant, "pwr": pwr, "qth": qth });
+            }
+            fetch(`http://${window.location.host}/editdb`, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded",
+                },
+                body: `type=tmpl&payload=${encodeURIComponent(JSON.stringify(jsontmpl))}`
+            }).then((response) => {
+                if (response.ok) document.querySelectorAll(".tmplstat").forEach(e => e.innerText = "模板保存成功");
+                else document.querySelectorAll(".tmplstat").forEach(e => e.innerText = "模板保存失败");
             });
-            document.getElementById("dictform").addEventListener("submit", (ev) => {
-                if (confirm("将覆盖原有 dict.json , 继续?")) {
-                    let j = { "rig": {}, "ant": {}, "pwr": {}, "qth": {} };
-                    for (let ele of document.getElementById("dicttable_rig").children) {
-                        let k = ele.querySelector(".dict_key").value;
-                        if (!k) continue;
-                        if (!(j.rig[k])) j.rig[k] = new Array();
-                        for (let inputs of ele.querySelector(".dict_values").children) {
-                            let v = inputs.querySelector(".dict_td_input").value;
-                            if (v && !j.rig[k].includes(v)) j.rig[k].push(v);
-                        }
-                    }
-                    for (let ele of document.getElementById("dicttable_ant").children) {
-                        let k = ele.querySelector(".dict_key").value;
-                        if (!k) continue;
-                        if (!(j.ant[k])) j.ant[k] = new Array();
-                        for (let inputs of ele.querySelector(".dict_values").children) {
-                            let v = inputs.querySelector(".dict_td_input").value;
-                            if (v && !j.ant[k].includes(v)) j.ant[k].push(v);
-                        }
-                    }
-                    for (let ele of document.getElementById("dicttable_pwr").children) {
-                        let k = ele.querySelector(".dict_key").value;
-                        if (!k) continue;
-                        if (!(j.pwr[k])) j.pwr[k] = new Array();
-                        for (let inputs of ele.querySelector(".dict_values").children) {
-                            let v = inputs.querySelector(".dict_td_input").value;
-                            if (v && !j.pwr[k].includes(v)) j.pwr[k].push(v);
-                        }
-                    }
-                    for (let ele of document.getElementById("dicttable_qth").children) {
-                        let k = ele.querySelector(".dict_key").value;
-                        if (!k) continue;
-                        if (!(j.qth[k])) j.qth[k] = new Array();
-                        for (let inputs of ele.querySelector(".dict_values").children) {
-                            let v = inputs.querySelector(".dict_td_input").value;
-                            if (v && !j.qth[k].includes(v)) j.qth[k].push(v);
-                        }
-                    }
-                    document.getElementById("dictpayload").value = JSON.stringify(j);
-                } else {
-                    ev.preventDefault();
+            // 整理提交字典
+            let jsondict = { "rig": {}, "ant": {}, "pwr": {}, "qth": {} };
+            for (let ele of document.getElementById("dicttable_rig").children) {
+                let k = ele.querySelector(".dict_key").value;
+                if (!k) continue;
+                if (!(jsondict.rig[k])) jsondict.rig[k] = new Array();
+                for (let inputs of ele.querySelector(".dict_values").children) {
+                    let v = inputs.querySelector(".dict_td_input").value;
+                    if (v && !jsondict.rig[k].includes(v)) jsondict.rig[k].push(v);
                 }
+            }
+            for (let ele of document.getElementById("dicttable_ant").children) {
+                let k = ele.querySelector(".dict_key").value;
+                if (!k) continue;
+                if (!(jsondict.ant[k])) jsondict.ant[k] = new Array();
+                for (let inputs of ele.querySelector(".dict_values").children) {
+                    let v = inputs.querySelector(".dict_td_input").value;
+                    if (v && !jsondict.ant[k].includes(v)) jsondict.ant[k].push(v);
+                }
+            }
+            for (let ele of document.getElementById("dicttable_pwr").children) {
+                let k = ele.querySelector(".dict_key").value;
+                if (!k) continue;
+                if (!(jsondict.pwr[k])) jsondict.pwr[k] = new Array();
+                for (let inputs of ele.querySelector(".dict_values").children) {
+                    let v = inputs.querySelector(".dict_td_input").value;
+                    if (v && !jsondict.pwr[k].includes(v)) jsondict.pwr[k].push(v);
+                }
+            }
+            for (let ele of document.getElementById("dicttable_qth").children) {
+                let k = ele.querySelector(".dict_key").value;
+                if (!k) continue;
+                if (!(jsondict.qth[k])) jsondict.qth[k] = new Array();
+                for (let inputs of ele.querySelector(".dict_values").children) {
+                    let v = inputs.querySelector(".dict_td_input").value;
+                    if (v && !jsondict.qth[k].includes(v)) jsondict.qth[k].push(v);
+                }
+            }
+            fetch(`http://${window.location.host}/editdb`, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded",
+                },
+                body: `type=dict&payload=${encodeURIComponent(JSON.stringify(jsondict))}`
+            }).then((response) => {
+                if (response.ok) document.querySelectorAll(".dictstat").forEach(e => e.innerText = " | 字典保存成功");
+                else document.querySelectorAll(".dictstat").forEach(e => e.innerText = " | 字典保存失败");
             });
         }
     </script>
@@ -157,96 +172,106 @@
     </style>
 </head>
 
-<body onload="onload()">
+<body>
     <h1>编辑数据库 - 业余无线电台网点名记录助手</h1>
     <a href="javascript:void(0);" onclick="location.assign(`http:&#47;&#47;${window.location.host}&#47;`)">返回主页</a>
-    <div id="edittmpl">
-        <fieldset>
-            <legend>模板 tmpl</legend>
-            <table>
-                <thead>
-                    <tr>
-                        <td>操作</td>
-                        <td>呼号</td>
-                        <td>设备</td>
-                        <td>天线</td>
-                        <td>功率</td>
-                        <td>台址</td>
-                    </tr>
-                </thead>
-                <tbody id="tmpltable"></tbody>
-            </table>
-            <input type="button" value="新增条目"
-                onclick="document.getElementById('tmpltable').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'></td><td><input type='text' class='tmpl_callsign'></td><td><input type='text' class='tmpl_rig'></td><td><input type='text' class='tmpl_ant'></td><td><input type='text' class='tmpl_pwr'></td><td><input type='text' class='tmpl_qth'></td>`);">
-            <hr>
-            <form action="/editdb" method="post" id="tmplform">
-                <input type="hidden" name="type" value="tmpl">
-                <input type="hidden" id="tmplpayload" name="payload">
-                <input type="submit" value="提交模板">
-            </form>
-        </fieldset>
+    <div>
+        <p>
+            <input type="button" onclick="show('edittmpl')" value="编辑模板">
+            <input type="button" onclick="show('editrigs')" value="编辑设备字典">
+            <input type="button" onclick="show('editants')" value="编辑天线字典">
+            <input type="button" onclick="show('editpwrs')" value="编辑功率字典">
+            <input type="button" onclick="show('editqths')" value="编辑台址字典">
+        </p>
     </div>
-    <div id="editdict">
-        <fieldset>
-            <legend>字典 dict</legend>
-            <table>
-                <thead>
-                    <tr>
-                        <td>操作</td>
-                        <td>设备缩写</td>
-                        <td>设备补全</td>
-                    </tr>
-                </thead>
-                <tbody id="dicttable_rig"></tbody>
-            </table>
-            <input type="button" value="新增设备条目"
-                onclick="document.getElementById('dicttable_rig').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除本条' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新增补全条目' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
-            <hr>
-            <table>
-                <thead>
-                    <tr>
-                        <td>操作</td>
-                        <td>天线缩写</td>
-                        <td>天线补全</td>
-                    </tr>
-                </thead>
-                <tbody id="dicttable_ant"></tbody>
-            </table>
-            <input type="button" value="新增天线条目"
-                onclick="document.getElementById('dicttable_ant').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除本条' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新增补全条目' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
-            <hr>
-            <table>
-                <thead>
-                    <tr>
-                        <td>操作</td>
-                        <td>功率缩写</td>
-                        <td>功率补全</td>
-                    </tr>
-                </thead>
-                <tbody id="dicttable_pwr"></tbody>
-            </table>
-            <input type="button" value="新增功率条目"
-                onclick="document.getElementById('dicttable_pwr').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除本条' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新增补全条目' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
-            <hr>
-            <table>
-                <thead>
-                    <tr>
-                        <td>操作</td>
-                        <td>台址缩写</td>
-                        <td>台址补全</td>
-                    </tr>
-                </thead>
-                <tbody id="dicttable_qth"></tbody>
-            </table>
-            <input type="button" value="新增台址条目"
-                onclick="document.getElementById('dicttable_qth').insertAdjacentHTML('beforeend', `<td><input type='button' value='删除本条' onclick='this.parentNode.parentNode.remove();'><input type='button' value='上移本条' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='下移本条' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新增补全条目' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
-            <hr>
-            <form action="/editdb" method="post" id="dictform">
-                <input type="hidden" name="type" value="dict">
-                <input type="hidden" id="dictpayload" name="payload">
-                <input type="submit" value="提交字典">
-            </form>
-        </fieldset>
+    <div>
+        <p>
+            <input type="button" onclick="submit()" value="保存">
+            <span class="tmplstat"></span>
+            <span class="dictstat"></span>
+        </p>
+    </div>
+    <hr>
+    <div id="edittmpl" class="edit">
+        <table>
+            <thead>
+                <tr>
+                    <td>操作</td>
+                    <td>呼号</td>
+                    <td>设备</td>
+                    <td>天线</td>
+                    <td>功率</td>
+                    <td>台址</td>
+                </tr>
+            </thead>
+            <tbody id="tmpltable"></tbody>
+        </table>
+        <input type="button" value="新增条目"
+            onclick="document.getElementById('tmpltable').insertAdjacentHTML('beforeend', `<td><input type='button' value='🗑️' onclick='this.parentNode.parentNode.remove();'><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'></td><td><input type='text' class='tmpl_callsign'></td><td><input type='text' class='tmpl_rig'></td><td><input type='text' class='tmpl_ant'></td><td><input type='text' class='tmpl_pwr'></td><td><input type='text' class='tmpl_qth'></td>`);">
+    </div>
+    <div id="editrigs" class="edit" hidden>
+        <table>
+            <thead>
+                <tr>
+                    <td>操作</td>
+                    <td>设备缩写</td>
+                    <td>设备补全</td>
+                </tr>
+            </thead>
+            <tbody id="dicttable_rig"></tbody>
+        </table>
+        <input type="button" value="新增条目"
+            onclick="document.getElementById('dicttable_rig').insertAdjacentHTML('beforeend', `<td><input type='button' value='🗑️' onclick='this.parentNode.parentNode.remove();'><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新建值' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
+    </div>
+    <div id="editants" class="edit" hidden>
+        <table>
+            <thead>
+                <tr>
+                    <td>操作</td>
+                    <td>天线缩写</td>
+                    <td>天线补全</td>
+                </tr>
+            </thead>
+            <tbody id="dicttable_ant"></tbody>
+        </table>
+        <input type="button" value="新增条目"
+            onclick="document.getElementById('dicttable_ant').insertAdjacentHTML('beforeend', `<td><input type='button' value='🗑️' onclick='this.parentNode.parentNode.remove();'><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新建值' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
+    </div>
+    <div id="editpwrs" class="edit" hidden>
+        <table>
+            <thead>
+                <tr>
+                    <td>操作</td>
+                    <td>功率缩写</td>
+                    <td>功率补全</td>
+                </tr>
+            </thead>
+            <tbody id="dicttable_pwr"></tbody>
+        </table>
+        <input type="button" value="新增条目"
+            onclick="document.getElementById('dicttable_pwr').insertAdjacentHTML('beforeend', `<td><input type='button' value='🗑️' onclick='this.parentNode.parentNode.remove();'><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新建值' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
+    </div>
+    <div id="editqths" class="edit" hidden>
+        <table>
+            <thead>
+                <tr>
+                    <td>操作</td>
+                    <td>台址缩写</td>
+                    <td>台址补全</td>
+                </tr>
+            </thead>
+            <tbody id="dicttable_qth"></tbody>
+        </table>
+        <input type="button" value="新增条目"
+            onclick="document.getElementById('dicttable_qth').insertAdjacentHTML('beforeend', `<td><input type='button' value='🗑️' onclick='this.parentNode.parentNode.remove();'><input type='button' value='⬆️' onclick='if (this.parentNode.parentNode.previousElementSibling) this.parentNode.parentNode.previousElementSibling.before(this.parentNode.parentNode);'><input type='button' value='⬇️' onclick='if (this.parentNode.parentNode.nextElementSibling) this.parentNode.parentNode.nextElementSibling.after(this.parentNode.parentNode);'><input type='button' value='新建值' onclick='this.parentNode.parentNode.querySelector(&quot;.dict_values&quot;).insertAdjacentHTML(&quot;beforeend&quot;, &quot;<div><input type=\\&quot;text\\&quot; class=\\&quot;dict_td_input\\&quot; onblur=\\&quot;if (!this.value) this.parentNode.remove();\\&quot;></div>&quot;);'></td><td><input type='text' class='dict_key'></td><td class='dict_values'></td>`);">
+    </div>
+    <hr>
+    <div>
+        <p>
+            <input type="button" onclick="submit()" value="保存">
+            <span class="tmplstat"></span>
+            <span class="dictstat"></span>
+        </p>
     </div>
 </body>
 

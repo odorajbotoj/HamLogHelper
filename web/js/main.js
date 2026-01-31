@@ -167,21 +167,19 @@ function onload() {
     // 获取记忆数据
     fetch(`http://${window.location.host}/tmpl.json`)
         .then((response) => {
-            if (response.ok) return response.json();
+            if (response.ok) {
+                tmpljson = response.json();
+                document.getElementById("tmpldone").innerText = " | 模板已加载";
+            }
             else return null;
-        })
-        .then((data) => {
-            tmpljson = data;
-            document.getElementById("tmpldone").innerText = " | 模板已加载";
         });
     fetch(`http://${window.location.host}/dict.json`)
         .then((response) => {
-            if (response.ok) return response.json();
+            if (response.ok) {
+                dictjson = response.json();
+                document.getElementById("dictdone").innerText = " | 字典已加载";
+            }
             else return null;
-        })
-        .then((data) => {
-            dictjson = data;
-            document.getElementById("dictdone").innerText = " | 字典已加载";
         });
 
     // 天地图
