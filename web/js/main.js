@@ -326,11 +326,16 @@ function onload() {
     });
 
     // 询问文件名
-    const now = new Date();
-    logname = prompt("输入要打开的文件名（不存在则新建）", `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`);
-    if (logname == null || logname == "") {
-        alert("您没有输入文件名");
-        return;
+    let storagename = localStorage.getItem("logfilename");
+    if (storagename) logname = storagename;
+    else {
+        const now = new Date();
+        logname = prompt("输入要打开的文件名（不存在则新建）", `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`);
+        if (logname == null || logname == "") {
+            alert("您没有输入文件名");
+            return;
+        }
+        localStorage.setItem("logfilename", logname);
     }
     document.querySelectorAll(".exportlink").forEach(e => e.href = `/export?n=${logname}`);
 
@@ -340,7 +345,7 @@ function onload() {
     socket.onmessage = (ev) => {
         let info = JSON.parse(String(ev.data));
         if (info.type == 2 && info.message == "OK") {
-            document.getElementById("connected").innerText = ` | 已打开 ${logname}.hjl`;
+            document.getElementById("connected").innerText = ` | 已打开 ${logname}.hjl | `;
         } else if (info.type == 3) {
             let markdel = false;
             // 更新提交提示

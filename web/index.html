@@ -40,7 +40,13 @@
     </header>
     <div id="mainpage">
         <div class="field" id="logdiv">
-            <p class="fieldtitle">记录 <a href="#" class="exportlink">导出</a><span id="connected"></span></p>
+            <p class="fieldtitle">
+                <span>记录&nbsp;</span>
+                <a href="#" class="exportlink">导出</a>
+                <span id="connected"></span>
+                <a href="javascript:void(0);"
+                    onclick="localStorage.removeItem('logfilename');window.location.reload();">打开新文件</a>
+            </p>
             <div id="logs">
                 <table>
                     <thead>
