@@ -10,6 +10,8 @@ var tmpljson, dictjson;
 var re = new RegExp("^(([1-9]\\d*)|0)\\.\\d+/[+-](([1-9]\\d*)|0)\\.\\d+$");
 var nextlog = 1;
 var marks = {};
+var lock_names = ["dt", "freq", "mode", "trig", "tant", "tpwr", "tqth"];
+var saved_locks = [false, false, false, false, false, false, false];
 
 var dynamics = { "rrig": new Set(), "rant": new Set(), "rpwr": new Set(), "rqth": new Set() };
 
@@ -33,6 +35,12 @@ function update_dt() {
 
 // 输入框清理函数
 function clear_input() {
+    for (let i = 0; i < saved_locks.length; i++) {
+        let e = document.getElementById(lock_names[i] + "lock");
+        e.checked ||= saved_locks[i];
+        e.onclick();
+        saved_locks[i] = false;
+    }
     document.querySelectorAll("input").forEach((ele) => { if (ele.type == "text" && !ele.disabled) ele.value = ""; });
     document.getElementById("index").value = 0; // by default, means new log line
     document.getElementById("rst").value = "59"; // by default
@@ -61,6 +69,12 @@ function editlog(idx) {
     let keys = ["index", "callsign", "dt", "freq", "mode", "rst", "rrig", "rant", "rpwr", "rqth", "trig", "tant", "tpwr", "tqth", "rmks"];
     for (let i = 0; i < keys.length; i++) {
         document.getElementById(`${keys[i]}`).value = document.getElementById(`log_td_i${idx}_${keys[i]}`).innerText;
+    }
+    for (let i = 0; i < lock_names.length; i++) {
+        let e = document.getElementById(lock_names[i] + "lock");
+        saved_locks[i] = e.checked;
+        e.checked = false;
+        e.onclick();
     }
     document.getElementById("inputtitle").innerText = `输入 #${idx}`;
     document.getElementById("submit").value = `提交 #${idx}`;
@@ -167,19 +181,21 @@ function onload() {
     // 获取记忆数据
     fetch(`http://${window.location.host}/tmpl.json`)
         .then((response) => {
-            if (response.ok) {
-                tmpljson = response.json();
-                document.getElementById("tmpldone").innerText = " | 模板已加载";
-            }
+            if (response.ok) return response.json();
             else return null;
+        })
+        .then((data) => {
+            tmpljson = data;
+            document.getElementById("tmpldone").innerText = " | 模板已加载";
         });
     fetch(`http://${window.location.host}/dict.json`)
         .then((response) => {
-            if (response.ok) {
-                dictjson = response.json();
-                document.getElementById("dictdone").innerText = " | 字典已加载";
-            }
+            if (response.ok) return response.json();
             else return null;
+        })
+        .then((data) => {
+            dictjson = data;
+            document.getElementById("dictdone").innerText = " | 字典已加载";
         });
 
     // 天地图
@@ -269,15 +285,13 @@ function onload() {
     document.getElementById("rqth").addEventListener("keydown", quickin_cb("rqth"));
 
     // 检查复选框状态
-    document.getElementById("dt").disabled = document.getElementById("dtauto").checked;
-    let lock_names = ["freq", "mode", "trig", "tant", "tpwr", "tqth"];
     for (let i of lock_names) document.getElementById(i).disabled = document.getElementById(i + "lock").checked;
 
     // 清空输入框
     clear_input();
     // 时间同步更新
     update_dt();
-    auto_dt(document.getElementById("dtauto"));
+    auto_dt(document.getElementById("dtlock"));
 
     // 表单提交行为
     document.getElementById("infoform").addEventListener("submit", (ev) => {
@@ -369,7 +383,7 @@ function onload() {
                     markdel = true;
                     inner = `<td></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})"><del>${info.payload.index}</del></a></td>`;
                     for (let i = 0; i < keys.length; i++) {
-                        inner += `<td id="log_td_i${info.payload.index}_${keys[i]}"><del>${info.payload[keys[i]]}<del></td>`;
+                        inner += `<td id="log_td_i${info.payload.index}_${keys[i]}" ${i == 2 || i == 3 || (i >= 9 && i <= 12) ? "hidden" : ""}><del>${info.payload[keys[i]]}<del></td>`;
                     }
                 }
                 document.getElementById(`log_tr_i${info.payload.index}`).innerHTML = inner;
