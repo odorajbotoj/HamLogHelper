@@ -56,16 +56,27 @@
     <p>文件: {{ .Name }}.hjl</p>
     <div>
         <div>
-            <input type="checkbox" id="bjt">
-            <label for="bjt">仅保存北京时间hh:mm</label>
+            <p>
+                <input type="checkbox" id="bjt" checked>
+                <label for="bjt">仅保存北京时间hh:mm</label>
+            </p>
         </div>
         <div>
-            <b>
-                <span>导出字段顺序: </span>
-                <span id="exlst"></span>
-            </b>
+            <p>
+                <b>
+                    <span>导出字段顺序: </span>
+                    <span id="exlst"></span>
+                </b>
+            </p>
         </div>
         <div>
+            <p>导出表格中列的顺序由您选择的顺序决定</p>
+        </div>
+        <div>
+            <input type="button"
+                onclick="document.querySelectorAll('.sel').forEach((e) => { e.checked = !e.checked; e.onclick(); });"
+                value="一键反选">
+            <span>&nbsp;|&nbsp;</span>
             <input type="button" onclick="window.open('/getadif?n={{ .Name }}')" value="ADIF">
             <input type="button"
                 onclick="window.open('/getcsv?n={{ .Name }}&s='+exportlist.join('')+'&bjthhmm='+(document.getElementById('bjt').checked ? '1' : '0'))"
