@@ -72,7 +72,11 @@
                     <tbody id="logtable"></tbody>
                 </table>
             </div>
-            <a href="#" class="exportlink">导出</a>
+            <p>
+                <a href="#" class="exportlink">导出</a>
+                <span>&nbsp;|&nbsp;</span>
+                <a href="javascript:void(0);" onclick="add2tmpl(1,-1)">全部添加到模板</a>
+            </p>
         </div>
         {{ with .Key }}
         <div class="field" id="mapdiv">

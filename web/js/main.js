@@ -115,17 +115,20 @@ function deletelog(idx) {
 }
 
 // 添加到模板
-function add2tmpl(idx) {
-    let newtmpl = {
-        "callsign": document.getElementById(`log_td_i${idx}_callsign`).innerText,
-        "rig": document.getElementById(`log_td_i${idx}_rrig`).innerText,
-        "ant": document.getElementById(`log_td_i${idx}_rant`).innerText,
-        "pwr": document.getElementById(`log_td_i${idx}_rpwr`).innerText,
-        "qth": document.getElementById(`log_td_i${idx}_rqth`).innerText
-    };
-    if (newtmpl.rig == "-" && newtmpl.ant == "-" && newtmpl.pwr == "-" && newtmpl.qth == "-") return;
-    if (tmpljson.some(item => item.callsign == newtmpl.callsign && item.rig == newtmpl.rig && item.ant == newtmpl.ant && item.pwr == newtmpl.pwr && item.qth == newtmpl.qth)) return;
-    tmpljson.push(newtmpl);
+function add2tmpl(begin, end) {
+    if (end == -1) end = nextlog - 1;
+    for (; begin <= end; begin++) {
+        let newtmpl = {
+            "callsign": document.getElementById(`log_td_i${begin}_callsign`).innerText,
+            "rig": document.getElementById(`log_td_i${begin}_rrig`).innerText,
+            "ant": document.getElementById(`log_td_i${begin}_rant`).innerText,
+            "pwr": document.getElementById(`log_td_i${begin}_rpwr`).innerText,
+            "qth": document.getElementById(`log_td_i${begin}_rqth`).innerText
+        };
+        if (newtmpl.rig == "-" && newtmpl.ant == "-" && newtmpl.pwr == "-" && newtmpl.qth == "-") continue;
+        if (tmpljson.some(item => item.callsign == newtmpl.callsign && item.rig == newtmpl.rig && item.ant == newtmpl.ant && item.pwr == newtmpl.pwr && item.qth == newtmpl.qth)) continue;
+        tmpljson.push(newtmpl);
+    }
     fetch(`http://${window.location.host}/editdb`, {
         method: "POST",
         headers: {
@@ -368,7 +371,7 @@ function onload() {
             document.getElementById("submit").value = `提交 #${nextlog}`;
             // 记录表格
             let keys = ["callsign", "dt", "freq", "mode", "rst", "rrig", "rant", "rpwr", "rqth", "trig", "tant", "tpwr", "tqth", "rmks"];
-            let inner = `<td><input type="button" value="标记为删除" onclick="deletelog(${info.payload.index})"><input type="button" value="添加到模板" onclick="add2tmpl(${info.payload.index})"></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
+            let inner = `<td><input type="button" value="标记为删除" onclick="deletelog(${info.payload.index})"><input type="button" value="添加到模板" onclick="add2tmpl(${info.payload.index}, ${info.payload.index})"></td><td id="log_td_i${info.payload.index}_index"><a href="javascript:void(0);" onclick="editlog(${info.payload.index})">${info.payload.index}</a></td>`;
             for (let i = 0; i < keys.length; i++) {
                 inner += `<td id="log_td_i${info.payload.index}_${keys[i]}" ${i == 2 || i == 3 || (i >= 9 && i <= 12) ? "hidden" : ""}>${info.payload[keys[i]]}</td>`;
             }
