@@ -24,7 +24,7 @@ import (
 	"time"
 )
 
-const VERSION string = "v1.6.0"
+const VERSION string = "v1.6.1"
 
 //go:embed web/*
 var embedFiles embed.FS
