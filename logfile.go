@@ -26,6 +26,10 @@ func parseLog(file *os.File) ([]LogLine, error) {
 		}
 		lst.set(line.Index, &line)
 	}
+	if err = scanner.Err(); err != nil {
+		log.Printf("Failed to scan file. %v", err)
+		return nil, err
+	}
 	// 清空文件
 	err = file.Truncate(0)
 	if err != nil {
