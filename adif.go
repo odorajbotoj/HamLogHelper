@@ -64,7 +64,7 @@ func writeADIF(w io.Writer, data LogLine) error {
 		}
 	}
 	for bandRxIdx = range BAND_TABLE {
-		if freq[0]+freq[1] > BAND_TABLE[bandRxIdx].max {
+		if freq[0] > BAND_TABLE[bandRxIdx].max {
 			continue
 		} else {
 			break
